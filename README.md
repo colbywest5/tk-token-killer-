@@ -4,6 +4,8 @@
 
 **Token-optimized commands for Claude Code**
 
+*Named "Token Killer" because it kills token waste, not your tokens. We're saving lives out here.*
+
 <br>
 
 ![TK Terminal](assets/terminal.svg)
