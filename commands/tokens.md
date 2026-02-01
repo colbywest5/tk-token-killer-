@@ -1,56 +1,84 @@
 ---
 name: tk:tokens
-description: Show token usage estimates for TK commands
+description: Show TK command file sizes and estimated token counts
 allowed-tools:
   - Bash
 ---
 
 # /tk:tokens
 
-Show estimated token savings compared to source implementations.
+Show actual file sizes and estimated token counts for TK commands.
 
-## Token Estimates
+## Process
 
+Calculate real file sizes and estimate tokens (~4 characters = 1 token):
+
+### macOS / Linux
+
+```bash
+echo "TK Command Sizes"
+echo "================"
+echo ""
+printf "%-15s %8s %10s\n" "Command" "Bytes" "~Tokens"
+printf "%-15s %8s %10s\n" "-------" "-----" "-------"
+
+for file in ~/.claude/commands/tk/*.md; do
+    name=$(basename "$file" .md)
+    bytes=$(wc -c < "$file" | tr -d ' ')
+    tokens=$((bytes / 4))
+    printf "%-15s %8s %10s\n" "$name" "$bytes" "~$tokens"
+done | sort -t$'\t' -k2 -rn
+
+echo ""
+echo "---------------------------------------"
+total_bytes=$(cat ~/.claude/commands/tk/*.md | wc -c | tr -d ' ')
+total_tokens=$((total_bytes / 4))
+printf "%-15s %8s %10s\n" "TOTAL" "$total_bytes" "~$total_tokens"
+echo ""
+echo "Note: Token estimate uses ~4 chars = 1 token (rough average)"
 ```
-╔═══════════════════════════════════════════════════════════════════════╗
-║                        TK TOKEN USAGE                                 ║
-╠═══════════════════════════════════════════════════════════════════════╣
-║  Command      │ TK Tokens  │ Original   │ Savings                     ║
-╠═══════════════════════════════════════════════════════════════════════╣
-║  /tk:map      │ ~650       │ ~3,500     │ 81%                         ║
-║  /tk:build    │ ~1,100     │ ~5,200     │ 79%                         ║
-║  /tk:design   │ ~1,200     │ ~4,800     │ 75%                         ║
-║  /tk:debug    │ ~600       │ ~2,800     │ 79%                         ║
-║  /tk:qa       │ ~1,600     │ ~6,500     │ 75%                         ║
-║  /tk:review   │ ~550       │ ~2,100     │ 74%                         ║
-║  /tk:clean    │ ~500       │ ~2,200     │ 77%                         ║
-║  /tk:doc      │ ~400       │ ~1,800     │ 78%                         ║
-║  /tk:deploy   │ ~580       │ ~2,400     │ 76%                         ║
-║  /tk:init     │ ~480       │ ~2,300     │ 79%                         ║
-╠═══════════════════════════════════════════════════════════════════════╣
-║  _shared.md   │ ~620       │ ~3,200     │ 81%                         ║
-╠═══════════════════════════════════════════════════════════════════════╣
-║  TOTAL        │ ~8,280     │ ~36,800    │ ~78%                        ║
-╚═══════════════════════════════════════════════════════════════════════╝
 
-Notes:
-- Tokens estimated using cl100k_base tokenizer
-- "Original" = combined token count from source implementations
-- Actual savings vary based on mode (light/medium/heavy)
-- Heavy mode spawns SubAgents which have their own context
+### Windows PowerShell
 
-Token Calculation:
-- TK loads _shared.md (~620 tokens) + command file
-- Light mode: base tokens only
-- Medium mode: +10-20% for additional prompts
-- Heavy mode: SubAgents get fresh context windows
+```powershell
+Write-Host "TK Command Sizes" -ForegroundColor Cyan
+Write-Host "================" -ForegroundColor Cyan
+Write-Host ""
 
-Cost Savings (at $3/1M input tokens):
-- Per command: ~$0.00008 saved
-- Per feature (map+build+qa+deploy): ~$0.0003 saved
-- Per day (heavy usage, 50 commands): ~$0.004 saved
-- Per month: ~$0.12 saved
+$files = Get-ChildItem "$env:USERPROFILE\.claude\commands\tk\*.md"
+$results = foreach ($file in $files) {
+    [PSCustomObject]@{
+        Command = $file.BaseName
+        Bytes = $file.Length
+        '~Tokens' = [math]::Round($file.Length / 4)
+    }
+}
 
-The real value isn't cost—it's context window space.
-More room = better quality output before degradation.
+$results | Sort-Object Bytes -Descending | Format-Table -AutoSize
+
+$totalBytes = ($files | Measure-Object -Property Length -Sum).Sum
+$totalTokens = [math]::Round($totalBytes / 4)
+
+Write-Host "---------------------------------------"
+Write-Host "TOTAL: $totalBytes bytes (~$totalTokens tokens)"
+Write-Host ""
+Write-Host "Note: Token estimate uses ~4 chars = 1 token (rough average)" -ForegroundColor DarkGray
 ```
+
+## What This Shows
+
+- **Bytes**: Actual file size on disk
+- **~Tokens**: Rough estimate (actual tokenization varies by model)
+
+## Context
+
+When you run a TK command:
+1. `_shared.md` is loaded (~2,000 tokens)
+2. The specific command file is loaded
+3. Total context = shared + command + your codebase
+
+## Tips
+
+- Smaller files = faster loading, more room for your code
+- Heavy mode spawns SubAgents with fresh context each
+- Use `light` mode for quick tasks to minimize overhead
