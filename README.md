@@ -4,8 +4,6 @@
 
 **Token-optimized commands for Claude Code**
 
-*~79% fewer tokens. Same capabilities.*
-
 <br>
 
 ![TK Terminal](assets/terminal-animated.svg)
@@ -22,7 +20,7 @@ AI coding tools burn through tokens fast. Most prompts are bloated with redundan
 
 The best AI coding workflows—[Get Shit Done](https://github.com/glittercowboy/get-shit-done), [Ralph](https://github.com/snarktank/ralph), Anthropic's official plugins—are genuinely excellent. But they're written for readability, not efficiency.
 
-**TK fixes that.** It takes the best patterns from 5 different systems, strips the redundancy, and delivers the same power with dramatically fewer tokens.
+**TK fixes that.** It takes the best patterns from 5 different systems, strips the redundancy, and delivers the same power with less overhead.
 
 ---
 
@@ -78,16 +76,17 @@ Then restart Claude Code and run `/tk:help`.
 | `/tk:clean` | Removes dead code, unused deps, console.logs. Refactors for clarity. |
 | `/tk:design` | Creates distinctive frontend interfaces—unique typography, bold colors, no AI slop. |
 
-### Utilities
+### Analysis & Utilities
 
 | Command | What it does |
 |---------|--------------|
+| `/tk:opinion` | **Honest project audit.** Asks questions, then gives direct feedback on architecture, code quality, dependencies, testing, docs, and MVP progress. |
 | `/tk:doc` | Generates README, API docs, architecture diagrams, inline comments. |
 | `/tk:init` | Scaffolds new projects with your preferred stack and tooling. |
 | `/tk:resume` | Picks up where you left off if interrupted. |
 | `/tk:learn` | Captures gotchas, patterns, and decisions. |
 | `/tk:status` | Quick health check: git, tests, types, build. |
-| `/tk:tokens` | Shows token usage estimates and savings. |
+| `/tk:tokens` | Shows token usage estimates. |
 | `/tk:help` | Shows all commands. |
 
 ---
@@ -110,19 +109,28 @@ Every command supports three modes:
 
 ---
 
-## Token Savings
+## `/tk:opinion` — Project Audit
 
-TK uses ~78% fewer tokens than the original implementations:
+Get honest, actionable feedback on your project:
 
-| Command | TK | Original | Savings |
-|---------|-----|----------|---------|
-| `/tk:map` | ~650 | ~3,500 | 81% |
-| `/tk:build` | ~1,100 | ~5,200 | 79% |
-| `/tk:qa` | ~1,600 | ~6,500 | 75% |
-| `/tk:debug` | ~600 | ~2,800 | 79% |
-| **Total** | ~8,280 | ~36,800 | **~78%** |
+```bash
+/tk:opinion medium
+```
 
-Run `/tk:tokens` for full breakdown.
+**What it checks:**
+- Architecture — Is the structure sensible? Any anti-patterns?
+- Code Quality — Consistency, dead code, error handling
+- Dependencies — Bloat, security issues, outdated packages
+- Testing — Coverage, meaningful tests, CI integration
+- Documentation — Can someone new get started?
+- MVP Progress — How far off are you? Any scope creep?
+
+**What you get:**
+- What's working (specific praise)
+- What's not working (direct feedback)
+- What to stop doing (time wasters)
+- What to start doing (high-impact changes)
+- Hot takes (things you might not want to hear)
 
 ---
 
@@ -134,9 +142,10 @@ When using `heavy` mode, TK spawns specialized SubAgents in parallel:
 |---------|-----------|
 | `map` | 6 mappers + DOCS |
 | `build` | 3 explorers → 3 architects → 3 reviewers + DOCS |
+| `opinion` | 4 auditors (architecture, code, deps, DX) + DOCS |
 | `design` | 3 researchers + 4 specialists + DOCS |
 | `debug` | 4 investigators + 3 fixers + DOCS |
-| `qa` | 6 specialists (security, edge cases, perf, a11y, chaos) + DOCS |
+| `qa` | 6 specialists (security, edge cases, perf, a11y) + DOCS |
 | `review` | 4 reviewers + DOCS |
 | `deploy` | 4 pre-flight + 4 post-deploy + DOCS |
 
@@ -220,7 +229,7 @@ Built from patterns in:
 
 ## Contributing
 
-PRs welcome. Found a way to reduce tokens further? Even better.
+PRs welcome.
 
 ## License
 

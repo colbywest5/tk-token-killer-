@@ -34,6 +34,7 @@ UTILITIES
   /tk:status    Project health (no mode)
   /tk:resume    Resume interrupted work
   /tk:learn     Capture gotcha/pattern/decision
+  /tk:opinion   Get honest project audit + opinions
   /tk:tokens    Token usage estimates
   /tk:help      This help
 
