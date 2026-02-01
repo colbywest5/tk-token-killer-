@@ -1,0 +1,214 @@
+{
+  "name": "tk-claude-skill",
+  "version": "1.0.0",
+  "description": "Token-optimized commands for Claude Code",
+  "protocol": "mcp",
+  "capabilities": {
+    "tools": true,
+    "prompts": true
+  },
+  "tools": [
+    {
+      "name": "tk_map",
+      "description": "Map project and create context (AGENTS.md, .planning/). Run this first on any project.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": ["light", "medium", "heavy"],
+            "default": "medium",
+            "description": "light=quick scan, medium=full map, heavy=6 parallel mappers"
+          },
+          "focus": {
+            "type": "string",
+            "description": "Optional: specific area to focus mapping on"
+          }
+        }
+      }
+    },
+    {
+      "name": "tk_build",
+      "description": "Build features using 7-phase workflow: Discovery → Exploration → Questions → Architecture → Implementation → Review → Summary",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": ["light", "medium", "heavy"],
+            "default": "medium"
+          },
+          "task": {
+            "type": "string",
+            "description": "What to build"
+          }
+        },
+        "required": ["task"]
+      }
+    },
+    {
+      "name": "tk_debug",
+      "description": "Systematic debugging with hypothesis testing and auto-revert on failed attempts",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": ["light", "medium", "heavy"],
+            "default": "light"
+          },
+          "problem": {
+            "type": "string",
+            "description": "Description of the problem"
+          }
+        },
+        "required": ["problem"]
+      }
+    },
+    {
+      "name": "tk_qa",
+      "description": "QA testing with security vulnerability scanning",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": ["light", "medium", "heavy"],
+            "default": "medium"
+          },
+          "focus": {
+            "type": "string",
+            "description": "Optional: specific area to test"
+          }
+        }
+      }
+    },
+    {
+      "name": "tk_review",
+      "description": "Code review with parallel reviewers checking correctness, security, performance, conventions",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": ["light", "medium", "heavy"],
+            "default": "medium"
+          },
+          "scope": {
+            "type": "string",
+            "description": "What to review (default: uncommitted changes)"
+          }
+        }
+      }
+    },
+    {
+      "name": "tk_design",
+      "description": "Create distinctive frontend interfaces with unique typography, bold colors, intentional motion",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": ["light", "medium", "heavy"],
+            "default": "medium"
+          },
+          "component": {
+            "type": "string",
+            "description": "What to design"
+          }
+        },
+        "required": ["component"]
+      }
+    },
+    {
+      "name": "tk_deploy",
+      "description": "Deploy with pre-flight checks and post-deploy verification",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": ["light", "medium", "heavy"],
+            "default": "medium"
+          }
+        }
+      }
+    },
+    {
+      "name": "tk_clean",
+      "description": "Cleanup codebase: remove dead code, unused deps, refactor",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": ["light", "medium", "heavy"],
+            "default": "light"
+          }
+        }
+      }
+    },
+    {
+      "name": "tk_doc",
+      "description": "Generate documentation: README, API docs, architecture diagrams",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": ["light", "medium", "heavy"],
+            "default": "medium"
+          }
+        }
+      }
+    },
+    {
+      "name": "tk_learn",
+      "description": "Capture gotchas, patterns, and decisions",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["gotcha", "pattern", "decision", "fix"],
+            "description": "Type of learning"
+          },
+          "content": {
+            "type": "string",
+            "description": "What you learned"
+          }
+        },
+        "required": ["content"]
+      }
+    },
+    {
+      "name": "tk_status",
+      "description": "Quick project health check: git, tests, types, build",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "tk_resume",
+      "description": "Resume interrupted work from .planning/STATE.md",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    }
+  ],
+  "prompts": [
+    {
+      "name": "tk_workflow",
+      "description": "Full TK workflow: map → build → qa → deploy",
+      "arguments": [
+        {
+          "name": "feature",
+          "description": "Feature to build",
+          "required": true
+        }
+      ]
+    }
+  ]
+}

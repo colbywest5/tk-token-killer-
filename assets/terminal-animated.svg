@@ -1,0 +1,139 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
+  <defs>
+    <style>
+      .terminal-bg { fill: #0d1117; }
+      .terminal-border { fill: #161b22; }
+      .title-bar { fill: #161b22; }
+      .btn-red { fill: #ff5f56; }
+      .btn-yellow { fill: #ffbd2e; }
+      .btn-green { fill: #27c93f; }
+      .text { font-family: 'SF Mono', 'Fira Code', Consolas, monospace; }
+      .prompt { fill: #58a6ff; }
+      .command { fill: #c9d1d9; }
+      .cyan { fill: #56d4dd; }
+      .green { fill: #3fb950; }
+      .yellow { fill: #d29922; }
+      .dim { fill: #484f58; }
+      .white { fill: #e6edf3; }
+      
+      /* Typing animation */
+      @keyframes typing {
+        from { width: 0; }
+        to { width: 100%; }
+      }
+      
+      @keyframes blink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0; }
+      }
+      
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      
+      .cursor {
+        animation: blink 1s step-end infinite;
+      }
+      
+      .line1 { animation: fadeIn 0.3s ease-out 0.5s both; }
+      .line2 { animation: fadeIn 0.3s ease-out 1.0s both; }
+      .line3 { animation: fadeIn 0.3s ease-out 1.5s both; }
+      .line4 { animation: fadeIn 0.3s ease-out 2.0s both; }
+      .line5 { animation: fadeIn 0.3s ease-out 2.5s both; }
+      .line6 { animation: fadeIn 0.3s ease-out 3.0s both; }
+      .line7 { animation: fadeIn 0.3s ease-out 3.5s both; }
+      .line8 { animation: fadeIn 0.3s ease-out 4.0s both; }
+      .line9 { animation: fadeIn 0.3s ease-out 4.5s both; }
+      .line10 { animation: fadeIn 0.3s ease-out 5.0s both; }
+      .line11 { animation: fadeIn 0.3s ease-out 5.5s both; }
+      .line12 { animation: fadeIn 0.3s ease-out 6.0s both; }
+    </style>
+  </defs>
+
+  <!-- Window -->
+  <rect class="terminal-border" width="800" height="500" rx="10"/>
+  <rect class="terminal-bg" x="1" y="1" width="798" height="498" rx="9"/>
+
+  <!-- Title bar -->
+  <rect class="title-bar" x="1" y="1" width="798" height="36" rx="9"/>
+  <rect class="terminal-bg" x="1" y="28" width="798" height="10"/>
+
+  <!-- Window buttons -->
+  <circle class="btn-red" cx="20" cy="18" r="6"/>
+  <circle class="btn-yellow" cx="40" cy="18" r="6"/>
+  <circle class="btn-green" cx="60" cy="18" r="6"/>
+
+  <!-- Title -->
+  <text x="400" y="22" text-anchor="middle" class="text dim" font-size="12">claude — tk</text>
+
+  <!-- Content -->
+  <g transform="translate(24, 60)">
+    <!-- Command 1 -->
+    <g class="line1">
+      <text class="text prompt" font-size="14" y="0">❯</text>
+      <text class="text command" font-size="14" x="18" y="0">npx tk-claude-skill</text>
+    </g>
+
+    <!-- Banner -->
+    <g class="line2">
+      <text class="text cyan" font-size="14" y="36">╔════════════════════════════════════════╗</text>
+      <text class="text cyan" font-size="14" y="56">║              TK v1.0.0                  ║</text>
+      <text class="text cyan" font-size="14" y="76">║     Token-optimized Claude Commands    ║</text>
+      <text class="text cyan" font-size="14" y="96">╚════════════════════════════════════════╝</text>
+    </g>
+
+    <!-- Install output -->
+    <g class="line3">
+      <text class="text green" font-size="14" y="132">✓</text>
+      <text class="text white" font-size="14" x="18" y="132">Installed tk.md</text>
+    </g>
+    
+    <g class="line4">
+      <text class="text green" font-size="14" y="156">✓</text>
+      <text class="text white" font-size="14" x="18" y="156">Installed commands/</text>
+    </g>
+
+    <g class="line5">
+      <text class="text dim" font-size="14" y="180">Installed to: ~/.claude/commands/</text>
+    </g>
+
+    <g class="line6">
+      <text class="text green" font-size="14" y="216">Done!</text>
+      <text class="text white" font-size="14" x="48" y="216">Run</text>
+      <text class="text cyan" font-size="14" x="84" y="216">/tk:help</text>
+      <text class="text white" font-size="14" x="168" y="216">to get started.</text>
+    </g>
+
+    <!-- Command 2 -->
+    <g class="line7">
+      <text class="text prompt" font-size="14" y="264">❯</text>
+      <text class="text command" font-size="14" x="18" y="264">/tk:map heavy</text>
+    </g>
+
+    <g class="line8">
+      <text class="text dim" font-size="14" y="292">Mapping project with 6 parallel agents...</text>
+    </g>
+
+    <g class="line9">
+      <text class="text green" font-size="14" y="320">✓</text>
+      <text class="text white" font-size="14" x="18" y="320">Created AGENTS.md (2,340 tokens)</text>
+    </g>
+
+    <g class="line10">
+      <text class="text green" font-size="14" y="344">✓</text>
+      <text class="text white" font-size="14" x="18" y="344">Created .planning/ (6 files)</text>
+    </g>
+
+    <g class="line11">
+      <text class="text cyan" font-size="14" y="380">→</text>
+      <text class="text white" font-size="14" x="18" y="380">Context ready. ~78% token reduction vs alternatives.</text>
+    </g>
+
+    <!-- Final prompt with cursor -->
+    <g class="line12">
+      <text class="text prompt" font-size="14" y="420">❯</text>
+      <text class="text white cursor" font-size="14" x="18" y="420">▌</text>
+    </g>
+  </g>
+</svg>

@@ -8,7 +8,7 @@
 
 <br>
 
-![TK Terminal](assets/terminal.svg)
+![TK Terminal](assets/terminal-animated.svg)
 
 <br>
 
@@ -26,6 +26,30 @@ The best AI coding workflows—[Get Shit Done](https://github.com/glittercowboy/
 
 ---
 
+## Install
+
+**NPM (recommended):**
+```bash
+npx tk-claude-skill
+```
+
+**One-line install:**
+```bash
+curl -fsSL https://raw.githubusercontent.com/colbywest5/tk-Claude-Skill/main/install.sh | bash
+```
+
+**Manual:**
+```bash
+git clone https://github.com/colbywest5/tk-Claude-Skill.git
+cd tk-Claude-Skill
+cp tk.md ~/.claude/commands/
+cp -r commands/ ~/.claude/commands/tk/
+```
+
+Then restart Claude Code and run `/tk:help`.
+
+---
+
 ## Commands
 
 <div align="center">
@@ -40,30 +64,31 @@ The best AI coding workflows—[Get Shit Done](https://github.com/glittercowboy/
 
 | Command | What it does |
 |---------|--------------|
-| `/tk:map` | **Run this first.** Scans your codebase, creates `AGENTS.md` with project context, sets up `.planning/` directory. All other commands depend on this. |
-| `/tk:build` | Builds features using a 7-phase workflow: Discovery → Codebase Exploration → Clarifying Questions → Architecture Design → Implementation → Quality Review → Summary |
-| `/tk:qa` | Tests your code. Includes security vulnerability scanning for injection attacks, XSS, hardcoded secrets, and more. |
-| `/tk:deploy` | Deploys to production with pre-flight checks and post-deploy verification. Auto-rollback on failure. |
+| `/tk:map` | **Run this first.** Scans your codebase, creates `AGENTS.md` with project context, sets up `.planning/` directory. |
+| `/tk:build` | Builds features using a 7-phase workflow: Discovery → Exploration → Questions → Architecture → Implementation → Review → Summary |
+| `/tk:qa` | Tests your code with security vulnerability scanning for injection, XSS, secrets, and more. |
+| `/tk:deploy` | Deploys with pre-flight checks and post-deploy verification. Auto-rollback on failure. |
 
 ### Quality & Maintenance
 
 | Command | What it does |
 |---------|--------------|
-| `/tk:debug` | Systematic debugging. Forms hypotheses, tests them one at a time, reverts failed attempts. Escalates automatically when stuck. |
-| `/tk:review` | Code review with 4 parallel reviewers checking correctness, security, performance, and conventions. Only reports high-confidence issues. |
-| `/tk:clean` | Removes dead code, unused dependencies, console.logs. Refactors for clarity. |
-| `/tk:design` | Creates distinctive frontend interfaces. Enforces unique typography, bold color choices, and intentional motion—no generic AI aesthetics. |
+| `/tk:debug` | Systematic debugging. Hypothesis testing, auto-revert on failures, escalation when stuck. |
+| `/tk:review` | Code review with 4 parallel reviewers. Only reports high-confidence issues. |
+| `/tk:clean` | Removes dead code, unused deps, console.logs. Refactors for clarity. |
+| `/tk:design` | Creates distinctive frontend interfaces—unique typography, bold colors, no AI slop. |
 
 ### Utilities
 
 | Command | What it does |
 |---------|--------------|
-| `/tk:doc` | Generates documentation: README, API docs, architecture diagrams, inline comments. |
-| `/tk:init` | Scaffolds a new project with your preferred stack, tooling, and CI/CD configuration. |
-| `/tk:resume` | Picks up where you left off if work was interrupted. |
-| `/tk:learn` | Captures gotchas, patterns, and decisions so future commands know about them. |
-| `/tk:status` | Quick health check: git state, tests, types, build, dependencies. |
-| `/tk:help` | Shows all commands and usage. |
+| `/tk:doc` | Generates README, API docs, architecture diagrams, inline comments. |
+| `/tk:init` | Scaffolds new projects with your preferred stack and tooling. |
+| `/tk:resume` | Picks up where you left off if interrupted. |
+| `/tk:learn` | Captures gotchas, patterns, and decisions. |
+| `/tk:status` | Quick health check: git, tests, types, build. |
+| `/tk:tokens` | Shows token usage estimates and savings. |
+| `/tk:help` | Shows all commands. |
 
 ---
 
@@ -73,186 +98,129 @@ Every command supports three modes:
 
 | Mode | When to use | What happens |
 |------|-------------|--------------|
-| `light` | Quick fixes, simple tasks | Fast execution, minimal questions, no SubAgents |
-| `medium` | Standard features | Balanced approach, 2-3 clarifying questions, structured workflow |
-| `heavy` | Complex features, thorough analysis | Full workflow with parallel SubAgents + dedicated DOCS agent |
+| `light` | Quick fixes, simple tasks | Fast, minimal questions, no SubAgents |
+| `medium` | Standard features | Balanced, 2-3 questions, structured |
+| `heavy` | Complex features | Full workflow, parallel SubAgents + DOCS |
 
-**Example:**
 ```bash
-/tk:build light    # Just build it, no questions
-/tk:build medium   # Ask key questions, then build
-/tk:build heavy    # Full 7-phase workflow with parallel agents
+/tk:build light    # Just build it
+/tk:build medium   # Ask questions, then build
+/tk:build heavy    # Full 7-phase with parallel agents
 ```
 
-The system auto-suggests escalation. If `light` fails twice, it recommends `medium`. Trust it.
+---
+
+## Token Savings
+
+TK uses ~78% fewer tokens than the original implementations:
+
+| Command | TK | Original | Savings |
+|---------|-----|----------|---------|
+| `/tk:map` | ~650 | ~3,500 | 81% |
+| `/tk:build` | ~1,100 | ~5,200 | 79% |
+| `/tk:qa` | ~1,600 | ~6,500 | 75% |
+| `/tk:debug` | ~600 | ~2,800 | 79% |
+| **Total** | ~8,280 | ~36,800 | **~78%** |
+
+Run `/tk:tokens` for full breakdown.
 
 ---
 
 ## Heavy Mode SubAgents
 
-When you use `heavy` mode, TK spawns specialized SubAgents that work in parallel. Every operation includes a **DOCS agent** that documents in real-time.
+When using `heavy` mode, TK spawns specialized SubAgents in parallel:
 
-| Command | SubAgents spawned |
-|---------|-------------------|
-| `map` | 6 mappers (structure, architecture, patterns, API, config, tech debt) + DOCS |
-| `build` | 3 code-explorers → 3 code-architects → 3 code-reviewers + DOCS |
-| `design` | 3 researchers + 4 specialists (structure, styling, motion, polish) + DOCS |
-| `debug` | 4 investigators + 3 solution attempts + DOCS |
-| `qa` | 6 specialists (security, edge cases, performance, accessibility, chaos, smoke) + DOCS |
-| `review` | 4 reviewers (correctness, security, performance, maintainability) + DOCS |
-| `clean` | 4 cleaners (dead code, dependencies, refactoring, organization) + DOCS |
-| `deploy` | 4 pre-flight + 4 post-deploy verifiers + DOCS |
+| Command | SubAgents |
+|---------|-----------|
+| `map` | 6 mappers + DOCS |
+| `build` | 3 explorers → 3 architects → 3 reviewers + DOCS |
+| `design` | 3 researchers + 4 specialists + DOCS |
+| `debug` | 4 investigators + 3 fixers + DOCS |
+| `qa` | 6 specialists (security, edge cases, perf, a11y, chaos) + DOCS |
+| `review` | 4 reviewers + DOCS |
+| `deploy` | 4 pre-flight + 4 post-deploy + DOCS |
 
 ---
 
-## `/tk:build` — The 7-Phase Workflow
+## `/tk:build` — 7-Phase Workflow
 
-When building features, TK follows a structured process:
-
-### Phase 1: Discovery
-Understands what you want to build. Creates a task list.
-
-### Phase 2: Codebase Exploration
-Spawns code-explorer agents to trace existing patterns, find similar features, and identify key files to read.
-
-### Phase 3: Clarifying Questions
-**This phase is mandatory.** The system identifies ambiguities—edge cases, error handling, integration points—and asks specific questions. It waits for your answers before proceeding.
-
-### Phase 4: Architecture Design
-Spawns code-architect agents with different approaches:
-- **Minimal:** Smallest change, maximum reuse
-- **Clean:** Maintainability, elegant abstractions
-- **Pragmatic:** Balance of speed and quality
-
-Presents trade-offs and recommends one. You choose.
-
-### Phase 5: Implementation
-After approval, implements the feature following the chosen architecture and codebase conventions.
-
-### Phase 6: Quality Review
-Spawns code-reviewer agents to check for bugs, quality issues, and convention violations. Only reports issues with ≥80% confidence.
-
-### Phase 7: Summary
-Documents what was built, decisions made, and files modified.
+| Phase | What happens |
+|-------|--------------|
+| 1. Discovery | Understand requirements, create task list |
+| 2. Exploration | Trace existing patterns, identify key files |
+| 3. Questions | **Mandatory.** Resolve all ambiguities before design |
+| 4. Architecture | Multiple approaches → trade-offs → you choose |
+| 5. Implementation | Build with approval, follow conventions |
+| 6. Review | Check bugs, quality, conventions (≥80% confidence) |
+| 7. Summary | Document what was built |
 
 ---
 
 ## `/tk:qa` — Security Scanning
 
-QA mode includes vulnerability detection for:
-
 | Vulnerability | What TK checks |
 |---------------|----------------|
 | Command injection | `exec()`, `child_process`, `os.system()` |
 | Code injection | `eval()`, `new Function()` |
-| XSS | `innerHTML`, `dangerouslySetInnerHTML`, `document.write()` |
-| Deserialization | `pickle` (Python) |
-| GitHub Actions injection | `${{ }}` in `run:` blocks |
-| Secrets exposure | Hardcoded passwords, API keys |
+| XSS | `innerHTML`, `dangerouslySetInnerHTML` |
+| Secrets | Hardcoded passwords, API keys |
 | Dependencies | `npm audit` vulnerabilities |
+| GitHub Actions | `${{ }}` injection in workflows |
 
-For each finding, TK provides the safe alternative.
+---
+
+## MCP Integration
+
+TK supports the Model Context Protocol:
+
+```json
+{
+  "mcpServers": {
+    "tk": {
+      "command": "npx",
+      "args": ["tk-claude-skill", "--mcp"]
+    }
+  }
+}
+```
+
+See [mcp/README.md](mcp/README.md) for details.
 
 ---
 
 ## Files Created
 
-After running `/tk:map`, your project gets:
-
 ```
-AGENTS.md              # Project knowledge base—stack, patterns, gotchas
+AGENTS.md              # Project knowledge base
 .planning/
-├── STATE.md           # Current work state (for /tk:resume)
+├── STATE.md           # Current work state
 ├── HISTORY.md         # Work log
-├── ISSUES.md          # Known issues (from QA)
+├── ISSUES.md          # Known issues
 ├── PATTERNS.md        # Discovered patterns
-├── DECISIONS.md       # Architectural decisions with rationale
-├── CODEBASE.md        # File and module map
-└── ARCHITECTURE.md    # System design with diagrams
+├── DECISIONS.md       # Decisions with rationale
+├── CODEBASE.md        # File map
+└── ARCHITECTURE.md    # System design
 ```
-
-All commands read from and write to these files. This is how context persists.
-
----
-
-## Installation
-
-```bash
-git clone https://github.com/colbywest5/tk-Claude-Skill.git
-cd tk-Claude-Skill
-
-# Global install (all projects)
-cp tk.md ~/.claude/commands/
-cp -r commands/ ~/.claude/commands/tk/
-
-# Or local install (current project)
-mkdir -p .claude/commands
-cp tk.md .claude/commands/
-cp -r commands/ .claude/commands/tk/
-```
-
-Restart Claude Code, then run `/tk:help` to verify.
-
----
-
-## Usage
-
-```bash
-# First time on a project
-/tk:map heavy
-
-# Build a feature
-/tk:build medium Add user authentication with OAuth
-
-# Debug an issue
-/tk:debug light The API returns 500 on large payloads
-
-# Before deploying
-/tk:qa heavy
-/tk:review medium
-
-# Deploy
-/tk:deploy medium
-
-# Capture what you learned
-/tk:learn Gotcha: Prisma needs explicit disconnect in serverless
-```
-
----
-
-## Tips
-
-1. **Always `/tk:map` first** — other commands depend on the context it creates
-
-2. **Start with `light`** — escalate only when needed
-
-3. **Use `/tk:learn`** — capture gotchas immediately so they're not repeated
-
-4. **Check `/tk:status`** — quick sanity check before starting work
-
-5. **Trust the escalation** — if the system suggests `medium`, it's usually right
 
 ---
 
 ## Credits
 
-TK combines patterns from:
+Built from patterns in:
 
-| Source | What we integrated |
-|--------|-------------------|
-| [Get Shit Done](https://github.com/glittercowboy/get-shit-done) | Context engineering, multi-agent orchestration, atomic commits |
-| [Ralph](https://github.com/snarktank/ralph) | Autonomous loops, fresh context per iteration, AGENTS.md patterns |
-| [feature-dev](https://github.com/anthropics/claude-code/tree/main/plugins/feature-dev) | 7-phase workflow, code-explorer/architect/reviewer agents |
-| [security-guidance](https://github.com/anthropics/claude-code/tree/main/plugins/security-guidance) | Vulnerability scanning patterns |
+| Source | Contribution |
+|--------|--------------|
+| [Get Shit Done](https://github.com/glittercowboy/get-shit-done) | Context engineering, multi-agent orchestration |
+| [Ralph](https://github.com/snarktank/ralph) | Autonomous loops, fresh context patterns |
+| [feature-dev](https://github.com/anthropics/claude-code/tree/main/plugins/feature-dev) | 7-phase workflow, specialized agents |
+| [security-guidance](https://github.com/anthropics/claude-code/tree/main/plugins/security-guidance) | Vulnerability scanning |
 | [frontend-design](https://github.com/anthropics/claude-code/tree/main/plugins/frontend-design) | Distinctive UI principles |
 
 ---
 
 ## Contributing
 
-Found a way to reduce tokens further? PRs welcome.
-
----
+PRs welcome. Found a way to reduce tokens further? Even better.
 
 ## License
 

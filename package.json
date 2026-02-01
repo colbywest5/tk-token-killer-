@@ -1,0 +1,44 @@
+{
+  "name": "tk-claude-skill",
+  "version": "1.0.0",
+  "description": "Token-optimized commands for Claude Code. ~79% fewer tokens, same capabilities.",
+  "main": "bin/install.js",
+  "bin": {
+    "tk-claude-skill": "./bin/install.js",
+    "tk": "./bin/install.js"
+  },
+  "scripts": {
+    "postinstall": "node bin/install.js --auto"
+  },
+  "keywords": [
+    "claude",
+    "claude-code",
+    "ai",
+    "coding",
+    "tokens",
+    "optimization",
+    "skills",
+    "commands",
+    "mcp",
+    "anthropic"
+  ],
+  "author": "colbywest5",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/colbywest5/tk-Claude-Skill.git"
+  },
+  "bugs": {
+    "url": "https://github.com/colbywest5/tk-Claude-Skill/issues"
+  },
+  "homepage": "https://github.com/colbywest5/tk-Claude-Skill#readme",
+  "files": [
+    "bin/",
+    "tk.md",
+    "commands/",
+    "mcp/"
+  ],
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
