@@ -14,10 +14,12 @@ $import(commands/tk/_shared.md)
 
 # TK v1.1.0 | /tk:map [mode]
 
-## STEP 0: LOAD RULES (SILENT)
+## STEP 0: LOAD RULES + VERSION (SILENT)
 
-Before ANY action: silently read .tk/RULES.md and follow ALL rules constantly.
-Do not display rules. Just follow them.
+Before ANY action:
+1. Silently load .tk/RULES.md - follow constantly
+2. Read or initialize .tk/VERSION
+3. If no version exists, initialize to v0.1.0
 
 Map project, create context. Without this, other commands work blind.
 

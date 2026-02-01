@@ -14,10 +14,14 @@ $import(commands/tk/_shared.md)
 
 # TK v1.1.0 | /tk:debug [mode]
 
-## STEP 0: LOAD RULES (SILENT)
+## STEP 0: LOAD RULES + VERSION (SILENT)
 
-Before ANY action: silently read .tk/RULES.md and follow ALL rules constantly.
-Do not display rules. Just follow them.
+Before ANY action:
+1. Silently load .tk/RULES.md - follow constantly
+2. Read .tk/VERSION - get current project version
+3. Display: `Debugging... (v{CURRENT_VERSION})`
+
+On fix completion: Bump PATCH version, display `v{OLD} → v{NEW}`
 
 Debug systematically. Break repair loops.
 

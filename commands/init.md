@@ -14,10 +14,12 @@ $import(commands/tk/_shared.md)
 
 # TK v1.1.0 | /tk:init [mode]
 
-## STEP 0: LOAD RULES (SILENT)
+## STEP 0: LOAD RULES + INIT VERSION
 
-Before ANY action: silently read .tk/RULES.md and follow ALL rules constantly.
-Do not display rules. Just follow them.
+Before ANY action:
+1. Silently load .tk/RULES.md - follow constantly
+2. Initialize .tk/VERSION to v0.1.0
+3. Display: `Initializing project v0.1.0...`
 
 Start a new project from scratch.
 

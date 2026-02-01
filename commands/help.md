@@ -37,7 +37,8 @@ UTILITIES
   /tk:opinion   Get honest project audit + opinions
   /tk:rules     Set global rules for all agents
   /tk:sync      Multi-agent coordination status
-  /tk:tokens    Token usage estimates
+  /tk:tokens    Show command file sizes
+  /tk:version   Show or bump project version
   /tk:update    Update TK to latest version
   /tk:help      This help
 

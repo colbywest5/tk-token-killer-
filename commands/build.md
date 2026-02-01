@@ -15,12 +15,21 @@ $import(commands/tk/_shared.md)
 
 # TK v1.1.0 | /tk:build [mode]
 
-## STEP 0: LOAD RULES (SILENT)
+## STEP 0: LOAD RULES + VERSION (SILENT)
 
-Before ANY action: silently read .tk/RULES.md and follow ALL rules constantly.
-Do not display rules. Just follow them.
+Before ANY action:
+1. Silently load .tk/RULES.md - follow constantly
+2. Read .tk/VERSION - get current project version
+3. Display: `Building... (v{CURRENT_VERSION})`
 
 Build what $MESSAGE describes using a structured 7-phase workflow.
+
+## On Completion
+
+After successful build:
+1. Bump version (new feature = MINOR, small fix = PATCH)
+2. Update .tk/VERSION with new version + history entry
+3. Display: `Complete. v{OLD} → v{NEW}`
 
 ## Core Principles
 - **Ask clarifying questions**: Identify ambiguities BEFORE implementation
