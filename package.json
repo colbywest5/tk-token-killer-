@@ -1,14 +1,15 @@
 {
   "name": "tk-claude-skill",
-  "version": "1.0.0",
-  "description": "Token-optimized commands for Claude Code. ~79% fewer tokens, same capabilities.",
+  "version": "1.1.0",
+  "description": "Token-optimized commands for Claude Code. Combines patterns from Get Shit Done, Ralph, and Anthropic plugins.",
   "main": "bin/install.js",
   "bin": {
     "tk-claude-skill": "./bin/install.js",
     "tk": "./bin/install.js"
   },
   "scripts": {
-    "postinstall": "node bin/install.js --auto"
+    "postinstall": "node bin/install.js --auto",
+    "release": "bash scripts/release.sh"
   },
   "keywords": [
     "claude",
@@ -20,7 +21,9 @@
     "skills",
     "commands",
     "mcp",
-    "anthropic"
+    "anthropic",
+    "productivity",
+    "developer-tools"
   ],
   "author": "colbywest5",
   "license": "MIT",
@@ -36,6 +39,8 @@
     "bin/",
     "tk.md",
     "commands/",
+    "agents/",
+    "hooks/",
     "mcp/"
   ],
   "engines": {

@@ -1,0 +1,54 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Get version from tag
+        id: version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+      
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: TK v${{ steps.version.outputs.VERSION }}
+          body: |
+            ## TK v${{ steps.version.outputs.VERSION }}
+            
+            Token-optimized commands for Claude Code.
+            
+            ### Install
+            
+            ```bash
+            npx tk-claude-skill
+            ```
+            
+            Or see [README](https://github.com/colbywest5/tk-Claude-Skill#installation) for more options.
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # Uncomment to auto-publish to npm
+  # npm:
+  #   runs-on: ubuntu-latest
+  #   needs: release
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: actions/setup-node@v4
+  #       with:
+  #         node-version: '20'
+  #         registry-url: 'https://registry.npmjs.org'
+  #     - run: npm publish
+  #       env:
+  #         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

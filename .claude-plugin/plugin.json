@@ -1,7 +1,7 @@
 {
   "name": "tk",
   "displayName": "TK - Token Killer",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Token-optimized commands for Claude Code. Combines patterns from Get Shit Done, Ralph, and Anthropic plugins with ~78% fewer tokens.",
   "author": "colbywest5",
   "repository": "https://github.com/colbywest5/tk-Claude-Skill",
