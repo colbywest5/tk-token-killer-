@@ -46,13 +46,35 @@ Every heavy mode operation includes a dedicated **DOCS SubAgent** that documents
 | Command | SubAgents |
 |---------|-----------|
 | map | 6 mappers + DOCS |
-| build | Research + task workers + DOCS |
+| build | 3 explorers + 3 architects + 3 reviewers + DOCS |
 | design | 3 research + 4 specialists + DOCS |
 | debug | 4 investigators + 3 fixers + DOCS |
-| qa | 5 specialists + DOCS |
+| qa | 6 specialists (incl. Security) + DOCS |
 | review | 4 reviewers + DOCS |
 | clean | 4 cleaners + DOCS |
 | deploy | 4 pre-flight + 4 post-deploy + DOCS |
+
+## Integrated Skills
+
+### Build Command (feature-dev)
+7-phase structured workflow:
+1. **Discovery** - Understand requirements
+2. **Codebase Exploration** - code-explorer agents trace existing patterns
+3. **Clarifying Questions** - MANDATORY - resolve all ambiguities
+4. **Architecture Design** - code-architect agents propose approaches
+5. **Implementation** - Build with approval
+6. **Quality Review** - code-reviewer agents check quality
+7. **Summary** - Document what was built
+
+### QA Command (security-guidance)
+Security vulnerability scanning for:
+- Command injection (`exec`, `os.system`, `child_process`)
+- Code injection (`eval`, `new Function`)
+- XSS (`innerHTML`, `dangerouslySetInnerHTML`, `document.write`)
+- Deserialization attacks (`pickle`)
+- GitHub Actions workflow injection
+- Hardcoded secrets
+- npm audit vulnerabilities
 
 ## Key Files Created
 

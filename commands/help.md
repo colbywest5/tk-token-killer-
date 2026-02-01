@@ -43,10 +43,10 @@ MODES
 
 HEAVY MODE SUBAGENTS
   map:    6 mappers + DOCS
-  build:  Research + task workers + DOCS
+  build:  3 explorers + 3 architects + 3 reviewers + DOCS
   design: 3 research + 4 specialists + DOCS
   debug:  4 investigators + 3 fixers + DOCS
-  qa:     5 specialists + DOCS
+  qa:     6 specialists (incl. Security) + DOCS
   review: 4 reviewers + DOCS
   clean:  4 cleaners + DOCS
   deploy: 4 pre-flight + 4 post-deploy + DOCS
