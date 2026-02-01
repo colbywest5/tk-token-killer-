@@ -1,0 +1,26 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'TK v1.1.0 ready. Run /tk:help for commands.'"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cat - | jq -r '.tool_input.file_path // empty' | while read f; do mkdir -p .tk/locks 2>/dev/null; done"
+          }
+        ]
+      }
+    ]
+  }
+}
