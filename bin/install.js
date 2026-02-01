@@ -20,7 +20,7 @@ const colors = {
 const banner = `
 ${colors.cyan}╔════════════════════════════════════════╗
 ║              TK v${VERSION}                  ║
-║     Token-optimized Claude Commands    ║
+║    Developer Toolkit for Claude Code   ║
 ╚════════════════════════════════════════╝${colors.reset}
 `;
 

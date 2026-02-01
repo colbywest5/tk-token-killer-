@@ -1,7 +1,7 @@
 {
   "name": "tk-claude-skill",
   "version": "1.1.0",
-  "description": "Token-optimized commands for Claude Code. Combines patterns from Get Shit Done, Ralph, and Anthropic plugins.",
+  "description": "A developer toolkit for Claude Code. Structured workflows, parallel agents, security scanning.",
   "main": "bin/install.js",
   "bin": {
     "tk-claude-skill": "./bin/install.js",

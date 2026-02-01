@@ -29,7 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.0] - 2025-02-01
 
 ### Added
-- Initial release of TK (Token Killer)
+- Initial release of TK (Toolkit)
 - 16 commands: map, build, design, debug, qa, review, clean, doc, deploy, init, resume, learn, status, tokens, help
 - 3 modes: light, medium, heavy
 - Heavy mode with parallel SubAgents + DOCS agent

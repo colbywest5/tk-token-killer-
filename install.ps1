@@ -1,4 +1,4 @@
-# TK - Token Killer Installer (PowerShell)
+# TK - Toolkit Installer (PowerShell)
 # Works on: Windows PowerShell, PowerShell Core (Windows/Mac/Linux)
 # Usage: irm https://raw.githubusercontent.com/colbywest5/tk-Claude-Skill/main/install.ps1 | iex
 
@@ -39,7 +39,7 @@ Options:
 
 Write-Host ""
 Write-Color "TK v$VERSION" "Cyan"
-Write-Color "Token-optimized Claude Commands" "DarkGray"
+Write-Color "Developer Toolkit for Claude Code" "DarkGray"
 Write-Host ""
 
 # Detect Claude directory based on OS

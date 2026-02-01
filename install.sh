@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# TK - Token Killer Installer
+# TK - Toolkit Installer
 # Works on: macOS, Linux, Windows (Git Bash, WSL, MSYS2)
 # Usage: curl -fsSL https://raw.githubusercontent.com/colbywest5/tk-Claude-Skill/main/install.sh | bash
 
@@ -15,7 +15,7 @@ RESET='\033[0m'
 
 echo ""
 echo -e "${CYAN}TK v${VERSION}${RESET}"
-echo -e "${DIM}Token-optimized Claude Commands${RESET}"
+echo -e "${DIM}Developer Toolkit for Claude Code${RESET}"
 echo ""
 
 # Detect OS and set Claude commands directory

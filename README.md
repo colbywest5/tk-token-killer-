@@ -2,9 +2,9 @@
 
 # TK
 
-**Token-optimized commands for Claude Code**
+**A developer toolkit for Claude Code**
 
-*Named "Token Killer" because it kills token waste, not your tokens. We're saving lives out here.*
+*Your AI pair programmer, supercharged.*
 
 <br>
 
@@ -18,11 +18,15 @@
 
 ## Why This Exists
 
-AI coding tools burn through tokens fast. Most prompts are bloated with redundant instructions, verbose documentation, and unnecessary context. When your context window fills up, Claude starts forgetting things and producing worse code. This is **context rot**.
+Claude Code is powerful, but raw. TK gives it structure.
 
-The best AI coding workflows—[Get Shit Done](https://github.com/glittercowboy/get-shit-done), [Ralph](https://github.com/snarktank/ralph), Anthropic's official plugins—are genuinely excellent. But they're written for readability, not efficiency.
+The best AI coding workflows—[Get Shit Done](https://github.com/glittercowboy/get-shit-done), [Ralph](https://github.com/snarktank/ralph), Anthropic's official plugins—each solve different problems. TK combines their best patterns into one cohesive toolkit:
 
-**TK fixes that.** It takes the best patterns from 5 different systems, strips the redundancy, and delivers the same power with less overhead.
+- **Structured workflows** — 7-phase build process, not chaos
+- **Parallel agents** — Multiple specialists working simultaneously  
+- **Context engineering** — Fresh context, no degradation
+- **Security scanning** — Catch vulnerabilities before they ship
+- **Rules enforcement** — Your standards, every time
 
 ---
 
