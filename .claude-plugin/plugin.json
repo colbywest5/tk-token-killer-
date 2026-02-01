@@ -72,6 +72,10 @@
       "description": "Set global rules for all TK agents (no emojis, no placeholders, etc.)"
     },
     {
+      "name": "tk:sync",
+      "description": "View and manage multi-agent coordination across instances"
+    },
+    {
       "name": "tk:status",
       "description": "Quick project health check"
     },
