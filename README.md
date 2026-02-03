@@ -18,7 +18,7 @@
 
 ## Why This Exists
 
-Claude Code is powerful, but raw. TK gives it structure.
+If you don't hit your token limit daily are you even doing anything? 
 
 The best AI coding workflows—[Get Shit Done](https://github.com/glittercowboy/get-shit-done), [Ralph](https://github.com/snarktank/ralph), Anthropic's official plugins—each solve different problems. TK combines their best patterns into one cohesive toolkit:
 
