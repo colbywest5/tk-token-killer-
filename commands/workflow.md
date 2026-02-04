@@ -36,6 +36,92 @@ Both pages include:
 
 ---
 
+## MANDATORY: Professional Style Guidelines
+
+**NO EMOJIS. EVER.**
+
+This is professional documentation. Never use emojis anywhere in the output:
+- No emojis in headings
+- No emojis in body text
+- No emojis in labels or captions
+- No emojis in status indicators
+- No emojis in buttons or navigation
+
+**Use professional SVG icons instead.**
+
+For status indicators, use inline SVG icons:
+
+```svg
+<!-- Checkmark (success) -->
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+  <circle cx="8" cy="8" r="7" stroke="#22c55e" stroke-width="2" fill="none"/>
+  <path d="M5 8 L7 10 L11 6" stroke="#22c55e" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+<!-- Warning (caution) -->
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+  <path d="M8 1 L15 14 L1 14 Z" stroke="#f59e0b" stroke-width="1.5" fill="none" stroke-linejoin="round"/>
+  <path d="M8 6 L8 9" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" fill="none"/>
+  <circle cx="8" cy="11.5" r="1" fill="#f59e0b"/>
+</svg>
+
+<!-- Error (critical) -->
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+  <circle cx="8" cy="8" r="7" stroke="#ef4444" stroke-width="2" fill="none"/>
+  <path d="M5.5 5.5 L10.5 10.5 M10.5 5.5 L5.5 10.5" stroke="#ef4444" stroke-width="2" stroke-linecap="round" fill="none"/>
+</svg>
+
+<!-- Info -->
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+  <circle cx="8" cy="8" r="7" stroke="#3b82f6" stroke-width="2" fill="none"/>
+  <path d="M8 7 L8 11" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" fill="none"/>
+  <circle cx="8" cy="4.5" r="1" fill="#3b82f6"/>
+</svg>
+
+<!-- Arrow right -->
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+  <path d="M3 8 L13 8 M9 4 L13 8 L9 12" stroke="#64748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+</svg>
+
+<!-- Document -->
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+  <path d="M4 2 L10 2 L12 4 L12 14 L4 14 Z" stroke="#64748b" stroke-width="1.5" fill="none" stroke-linejoin="round"/>
+  <path d="M10 2 L10 4 L12 4" stroke="#64748b" stroke-width="1.5" fill="none" stroke-linejoin="round"/>
+  <path d="M6 7 L10 7 M6 9 L10 9 M6 11 L8 11" stroke="#64748b" stroke-width="1" stroke-linecap="round" fill="none"/>
+</svg>
+
+<!-- Gear/Settings -->
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+  <circle cx="8" cy="8" r="2.5" stroke="#64748b" stroke-width="1.5" fill="none"/>
+  <path d="M8 1 L8 3 M8 13 L8 15 M1 8 L3 8 M13 8 L15 8 M2.9 2.9 L4.3 4.3 M11.7 11.7 L13.1 13.1 M2.9 13.1 L4.3 11.7 M11.7 4.3 L13.1 2.9" stroke="#64748b" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+</svg>
+
+<!-- Chart/Analytics -->
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+  <path d="M2 14 L2 8 L5 8 L5 14 M6 14 L6 4 L9 4 L9 14 M10 14 L10 6 L13 6 L13 14" stroke="#64748b" stroke-width="1.5" fill="none" stroke-linejoin="round"/>
+</svg>
+
+<!-- Network/Layers -->
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+  <ellipse cx="8" cy="4" rx="6" ry="2" stroke="#64748b" stroke-width="1.5" fill="none"/>
+  <path d="M2 4 L2 8 Q2 10 8 10 Q14 10 14 8 L14 4" stroke="#64748b" stroke-width="1.5" fill="none"/>
+  <path d="M2 8 L2 12 Q2 14 8 14 Q14 14 14 12 L14 8" stroke="#64748b" stroke-width="1.5" fill="none"/>
+</svg>
+```
+
+**Icon usage guidelines:**
+- Place icons inline with text using `vertical-align: middle`
+- Use consistent sizing (16x16 for inline, 24x24 for headers)
+- Match icon stroke color to text color or use semantic colors
+- Always include `fill="none"` on stroke-based icons
+
+**Text-only alternatives (when icons aren't suitable):**
+- Use `[OK]`, `[WARN]`, `[ERROR]`, `[INFO]` badges
+- Use colored dots: small filled circles (`<circle r="4" fill="#22c55e"/>`)
+- Use priority labels: `HIGH`, `MEDIUM`, `LOW` in styled spans
+
+---
+
 ## Process
 
 ### 1. Analyze Target
