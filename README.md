@@ -255,6 +255,8 @@ Generate comprehensive, self-contained HTML documentation with visual diagrams, 
 | **Architecture Diagrams** | System overview, data flow, component interactions |
 | **Executive Summary** | Condensed view for stakeholders and leadership |
 | **Improvement Recommendations** | Prioritized suggestions with business impact |
+| **Secrets Redaction** | Auto-redacts API keys, passwords, tokens (security-first) |
+| **Professional Icons** | SVG icons only, no emojis |
 
 **Output files:**
 | Mode | Output |
@@ -277,6 +279,11 @@ Generate comprehensive, self-contained HTML documentation with visual diagrams, 
 - Pre-refactor analysis
 - Knowledge transfer
 - Network layer analysis
+
+**Security & Quality:**
+- Secrets auto-redacted (API keys, passwords, tokens, connection strings)
+- No emojis — professional SVG icons only
+- SVG validation ensures clean rendering (no black box artifacts)
 
 ---
 
