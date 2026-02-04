@@ -13,6 +13,102 @@ allowed-tools:
 
 Generate comprehensive, self-contained HTML documentation with visual workflow diagrams, OSI model analysis, analytical charts, and dual-view output (Full + Executive). Perfect for team understanding, onboarding, and executive briefings.
 
+---
+
+## CRITICAL RULES (READ FIRST)
+
+### 1. SVG BLACK BOX PREVENTION
+
+**BLACK BOXES IN SVG OUTPUT ARE UNACCEPTABLE.**
+
+Before writing ANY SVG element, follow this checklist:
+
+```
+PRE-OUTPUT SVG CHECKLIST (MANDATORY):
+[ ] Every <path> has fill="none" if it's a line/stroke
+[ ] Every <path> that IS a shape has an explicit fill color
+[ ] Every <rect> has an explicit fill attribute
+[ ] Every <circle> has an explicit fill attribute
+[ ] Every <polygon> has an explicit fill attribute
+[ ] Every <ellipse> has an explicit fill attribute
+[ ] No path d="" attributes are left incomplete
+[ ] All paths that should be closed end with Z
+[ ] No elements rely on default black fill
+```
+
+**THE FIX IS SIMPLE:** Add `fill="none"` to EVERY line/connector/arrow path. Add explicit `fill="#color"` to EVERY shape.
+
+**Examples of CORRECT SVG:**
+```svg
+<!-- LINE: Must have fill="none" -->
+<path d="M10 10 L100 50" stroke="#64748b" stroke-width="2" fill="none"/>
+
+<!-- ARROW: Must have fill="none" on path -->
+<path d="M10 10 L90 10" stroke="#64748b" stroke-width="2" fill="none"/>
+<polygon points="90,5 100,10 90,15" fill="#64748b"/>
+
+<!-- SHAPE: Must have explicit fill color -->
+<rect x="10" y="10" width="100" height="50" fill="#3b82f6" rx="4"/>
+<circle cx="50" cy="50" r="20" fill="#22c55e"/>
+```
+
+**Examples of WRONG SVG (causes black boxes):**
+```svg
+<!-- WRONG: Missing fill="none" - will render black -->
+<path d="M10 10 L100 50" stroke="#64748b" stroke-width="2"/>
+
+<!-- WRONG: Missing fill attribute - will render black -->
+<rect x="10" y="10" width="100" height="50"/>
+
+<!-- WRONG: Incomplete path - unpredictable rendering -->
+<path d="M10 10 L100 50 L100 100" stroke="#64748b"/>
+```
+
+**VALIDATION STEP:** After generating any SVG, mentally trace each element and verify it has the correct fill attribute. If in doubt, add `fill="none"`.
+
+---
+
+### 2. SECRETS REDACTION (SECURITY)
+
+**NEVER expose secrets, credentials, or sensitive data in documentation.**
+
+This documentation is for internal use and should be detailed, BUT must redact:
+
+| Type | Example | Redact To |
+|------|---------|-----------|
+| API Keys | `sk-1234567890abcdef` | `[API_KEY_REDACTED]` |
+| Passwords | `myP@ssw0rd123` | `[PASSWORD_REDACTED]` |
+| Tokens | `ghp_xxxxxxxxxxxx` | `[TOKEN_REDACTED]` |
+| Connection Strings | `mongodb://user:pass@host` | `mongodb://[CREDENTIALS]@host` |
+| Private Keys | `-----BEGIN RSA PRIVATE KEY-----` | `[PRIVATE_KEY_REDACTED]` |
+| AWS Keys | `AKIA...` | `[AWS_KEY_REDACTED]` |
+| Database Passwords | `DB_PASS=secret` | `DB_PASS=[REDACTED]` |
+| JWT Secrets | `JWT_SECRET=xxx` | `JWT_SECRET=[REDACTED]` |
+| Usernames (service accounts) | `admin_sa_prod` | Keep if non-sensitive, redact if reveals infrastructure |
+
+**What TO include (be detailed):**
+- Environment variable NAMES (not values)
+- Configuration file STRUCTURE (not secrets)
+- API endpoint PATHS (not auth tokens)
+- Database SCHEMA (not credentials)
+- Service NAMES and PURPOSES
+- Architecture and data flow
+- All technical details that don't compromise security
+
+**Redaction format:**
+```
+Environment Variables:
+- DATABASE_URL=[CONNECTION_STRING_REDACTED]
+- API_KEY=[REDACTED]
+- JWT_SECRET=[REDACTED]
+- DEBUG=true  (non-sensitive, keep as-is)
+- PORT=3000   (non-sensitive, keep as-is)
+```
+
+**When in doubt, redact it.**
+
+---
+
 ## Use Cases
 
 - Team doesn't understand how a system/feature works
@@ -1134,30 +1230,58 @@ Map every component to its operating OSI layer(s). Many components span multiple
 
 ### 6. SVG Generation Rules
 
-**CRITICAL: Follow these rules for ALL SVG graphics**
+**CRITICAL: Follow these rules for ALL SVG graphics. Black boxes are UNACCEPTABLE.**
 
-1. **Always close paths** - Every `<path>` element must end with `Z` in the `d` attribute when creating shapes
-2. **Use explicit fills** - Set `fill="none"` on path elements that are meant to be lines/strokes only
-3. **Prefer simple shapes** - Use `<rect>`, `<circle>`, `<ellipse>`, `<polygon>` over complex `<path>` elements when possible
-4. **Validate before output** - After generating any SVG, verify:
-   - No overlapping fill areas create unintended shapes
-   - All connectors/arrows use `stroke` only, not `fill`
-   - Background elements don't extend beyond their intended bounds
-   - No black polygon artifacts from unclosed or malformed paths
-5. **For charts specifically:**
-   - Line graphs: `fill="none"` on the data path, use circles for data points
-   - Pie charts: Each slice is a closed path ending with `Z`
-   - Bar charts: Use `<rect>` elements with explicit fills
-   - All text must have explicit `fill` color
-6. **Color Palette:**
-   - Primary: `#3b82f6` (blue)
-   - Success: `#22c55e` (green)
-   - Warning: `#f59e0b` (amber)
-   - Error: `#ef4444` (red)
-   - Purple: `#8b5cf6`
-   - Secondary: `#64748b` (slate)
-   - Background: `#f8fafc`
-   - Border: `#e2e8f0`
+**REMINDER: See CRITICAL RULES section at top of this document for the mandatory SVG checklist.**
+
+**The #1 cause of black boxes: Missing `fill="none"` on path elements.**
+
+**EVERY SVG ELEMENT MUST HAVE AN EXPLICIT FILL:**
+
+| Element Type | If it's a LINE/STROKE | If it's a SHAPE |
+|--------------|----------------------|-----------------|
+| `<path>` | `fill="none"` | `fill="#hexcolor"` |
+| `<rect>` | N/A (always a shape) | `fill="#hexcolor"` |
+| `<circle>` | `fill="none"` (if outline only) | `fill="#hexcolor"` |
+| `<polygon>` | N/A (always a shape) | `fill="#hexcolor"` |
+| `<ellipse>` | `fill="none"` (if outline only) | `fill="#hexcolor"` |
+| `<line>` | No fill needed | N/A |
+| `<polyline>` | `fill="none"` ALWAYS | N/A |
+
+**Rules:**
+1. **Lines and connectors:** ALWAYS `fill="none"` + `stroke="#color"`
+2. **Shapes:** ALWAYS `fill="#color"` (never rely on defaults)
+3. **Paths that form shapes:** Must end with `Z` AND have `fill="#color"`
+4. **Text:** ALWAYS `fill="#color"` for the text color
+5. **Groups `<g>`:** Do NOT rely on inherited fills, set on each element
+
+**For charts specifically:**
+- Line graphs: `fill="none"` on the data path, use `<circle>` for data points
+- Pie charts: Each slice is a closed path ending with `Z` with explicit fill
+- Bar charts: Use `<rect>` elements with explicit fills
+- Sparklines: `fill="none"` ALWAYS
+
+**Color Palette:**
+- Primary: `#3b82f6` (blue)
+- Success: `#22c55e` (green)
+- Warning: `#f59e0b` (amber)
+- Error: `#ef4444` (red)
+- Purple: `#8b5cf6`
+- Secondary: `#64748b` (slate)
+- Background: `#f8fafc`
+- Border: `#e2e8f0`
+- Text: `#1e293b`
+- Muted text: `#64748b`
+
+**FINAL VALIDATION BEFORE OUTPUT:**
+```
+For EACH SVG in the document:
+  For EACH element in the SVG:
+    - Does it have fill="none" or fill="#color"? 
+    - If NO → ADD IT NOW
+    - If path is a line → fill="none"
+    - If path is a shape → fill="#color" and ends with Z
+```
 
 ---
 
