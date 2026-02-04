@@ -26,21 +26,94 @@ Generate a comprehensive, self-contained HTML document with visual workflow diag
 
 ### 1. Analyze Target
 
+**MANDATORY: Load ALL TK Context Files**
+
+Before generating ANY documentation, recursively read all TK-generated context. This is critical - these files contain the project's institutional knowledge.
+
 ```bash
 # Determine what we're documenting
 # - If [context] mentions specific files/features, focus there
-# - If no context, analyze the entire project
+# - If no context, analyze the entire project using ALL available context
 
-# Gather information
-find . -name "*.ts" -o -name "*.tsx" -o -name "*.js" | grep -v node_modules | head -50
-[ -f "package.json" ] && cat package.json | head -50
-[ -f "AGENTS.md" ] && cat AGENTS.md
+# ===========================================
+# STEP 1: Load ROOT context files
+# ===========================================
+[ -f "AGENTS.md" ] && cat AGENTS.md           # Primary project knowledge base
+[ -f "README.md" ] && cat README.md           # Project overview
+
+# ===========================================
+# STEP 2: Load .tk/ directory (TK runtime state)
+# ===========================================
+[ -d ".tk" ] && echo "=== .tk/ Context Found ==="
+
+# Rules that govern all agents
+[ -f ".tk/RULES.md" ] && cat .tk/RULES.md
+
+# Version history and changelog
+[ -f ".tk/VERSION" ] && cat .tk/VERSION
+
+# Multi-agent coordination logs
+[ -f ".tk/COORDINATION.md" ] && cat .tk/COORDINATION.md
+
+# Map file if exists
 [ -f ".tk/MAP.md" ] && cat .tk/MAP.md
 
-# Look for existing docs
+# Per-agent logs (read all, they contain execution history)
+if [ -d ".tk/agents" ]; then
+    echo "=== Agent Logs ==="
+    for f in .tk/agents/*.md; do
+        [ -f "$f" ] && echo "--- $f ---" && cat "$f"
+    done
+fi
+
+# ===========================================
+# STEP 3: Load .planning/ directory (Project planning state)
+# ===========================================
+[ -d ".planning" ] && echo "=== .planning/ Context Found ==="
+
+# Current work state
+[ -f ".planning/STATE.md" ] && cat .planning/STATE.md
+
+# Work history log
+[ -f ".planning/HISTORY.md" ] && cat .planning/HISTORY.md
+
+# Known issues and bugs
+[ -f ".planning/ISSUES.md" ] && cat .planning/ISSUES.md
+
+# Architecture decisions with rationale
+[ -f ".planning/DECISIONS.md" ] && cat .planning/DECISIONS.md
+
+# Complete codebase file map
+[ -f ".planning/CODEBASE.md" ] && cat .planning/CODEBASE.md
+
+# System architecture documentation
+[ -f ".planning/ARCHITECTURE.md" ] && cat .planning/ARCHITECTURE.md
+
+# Discovered patterns and conventions
+[ -f ".planning/PATTERNS.md" ] && cat .planning/PATTERNS.md
+
+# ===========================================
+# STEP 4: Load source code context
+# ===========================================
+[ -f "package.json" ] && cat package.json | head -50
+find . -name "*.ts" -o -name "*.tsx" -o -name "*.js" | grep -v node_modules | head -50
+
+# ===========================================
+# STEP 5: Check for existing docs
+# ===========================================
 ls docs/ 2>/dev/null
-[ -f "README.md" ] && cat README.md | head -100
+[ -d "docs" ] && find docs/ -name "*.md" -exec cat {} \;
 ```
+
+**Context Priority Order:**
+1. `.planning/ARCHITECTURE.md` - Use this for system diagrams
+2. `.planning/CODEBASE.md` - Use this for file/component references
+3. `.planning/PATTERNS.md` - Use this for conventions and examples
+4. `.planning/DECISIONS.md` - Use this for "why" explanations
+5. `AGENTS.md` - Use this for project overview
+6. `.tk/RULES.md` - Use this for constraints/guidelines
+7. `.planning/ISSUES.md` - Use this for improvement recommendations
+8. `.planning/HISTORY.md` - Use this for timeline/evolution
 
 ### 2. Mode Execution
 
