@@ -13,7 +13,7 @@ allowed-tools:
 
 # /tk:task mode [message]
 
-**Tasks:** map, build, design, debug, qa, review, clean, doc, deploy, init, resume, learn, status, help
+**Tasks:** map, build, design, debug, qa, review, clean, doc, workflow, deploy, init, resume, learn, status, help
 **Modes:** light (fast), medium (balanced), heavy (comprehensive + parallel SubAgents)
 
 ## Parse & Route
@@ -37,6 +37,7 @@ TASKS:
   review   Review code
   clean    Cleanup codebase
   doc      Generate documentation
+  workflow Visual workflow docs (SVG diagrams + analysis)
   deploy   Deploy to production
   init     Initialize new project
   resume   Resume previous work
@@ -55,4 +56,6 @@ EXAMPLES:
   /tk:design heavy Landing page for a premium fitness app
   /tk:debug light API returns 500 on large requests
   /tk:qa heavy Test everything before launch
+  /tk:workflow heavy How does the payment processing work?
+  /tk:workflow medium Document the authentication flow
 ```
