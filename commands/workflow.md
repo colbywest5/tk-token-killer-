@@ -407,6 +407,40 @@ Output: `workflow-complete.html` with:
 
 ### 4. SVG Diagram Guidelines
 
+**CRITICAL: SVG Generation Rules (MUST FOLLOW)**
+
+When generating ANY SVG graphics, flowcharts, or diagrams:
+
+1. **Always close paths** - Every `<path>` element must end with `Z` in the `d` attribute
+2. **Use explicit fills** - Set `fill="none"` on path elements that are meant to be lines/strokes only
+3. **Prefer simple shapes** - Use `<rect>`, `<circle>`, `<ellipse>`, `<polygon>` over complex `<path>` elements when possible
+4. **Validate before output** - After generating any SVG, verify:
+   - No overlapping fill areas create unintended shapes
+   - All connectors/arrows use `stroke` only, not `fill`
+   - Background elements don't extend beyond their intended bounds
+   - No black polygon artifacts from unclosed or malformed paths
+5. **For flowcharts specifically:**
+   - Decision diamonds: explicit 4-point `<polygon>` with closed paths
+   - Connectors: stroke-only paths with `fill="none"`
+   - Never use complex clip-paths or masks
+   - All shapes must have explicit `fill` attribute (no implicit black fills)
+6. **For line/arrow paths:**
+   ```svg
+   <!-- CORRECT: stroke only, no fill -->
+   <path d="M10 10 L100 10" stroke="#64748b" stroke-width="2" fill="none"/>
+   
+   <!-- WRONG: missing fill="none" causes black fill -->
+   <path d="M10 10 L100 10" stroke="#64748b" stroke-width="2"/>
+   ```
+7. **For shapes that need fill:**
+   ```svg
+   <!-- CORRECT: explicit fill color -->
+   <rect x="10" y="10" width="100" height="50" fill="#3b82f6" rx="8"/>
+   
+   <!-- CORRECT: closed polygon with explicit fill -->
+   <polygon points="50,0 100,50 50,100 0,50" fill="#f59e0b"/>
+   ```
+
 **Architecture Diagram:**
 ```svg
 <svg viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
