@@ -20,13 +20,13 @@
 
 If you don't hit your token limit daily are you even doing anything? 
 
-The best AI coding workflows—[Get Shit Done](https://github.com/glittercowboy/get-shit-done), [Ralph](https://github.com/snarktank/ralph), Anthropic's official plugins—each solve different problems. TK combines their best patterns into one cohesive toolkit:
+The best AI coding workflows--[Get Shit Done](https://github.com/glittercowboy/get-shit-done), [Ralph](https://github.com/snarktank/ralph), Anthropic's official plugins--each solve different problems. TK combines their best patterns into one cohesive toolkit:
 
-- **Structured workflows** — 7-phase build process, not chaos
-- **Parallel agents** — Multiple specialists working simultaneously  
-- **Context engineering** — Fresh context, no degradation
-- **Security scanning** — Catch vulnerabilities before they ship
-- **Rules enforcement** — Your standards, every time
+- **Structured workflows** -- 7-phase build process, not chaos
+- **Parallel agents** -- Multiple specialists working simultaneously  
+- **Context engineering** -- Fresh context, no degradation
+- **Security scanning** -- Catch vulnerabilities before they ship
+- **Rules enforcement** -- Your standards, every time
 
 ---
 
@@ -108,8 +108,8 @@ Restart Claude Code, then run:
 
 | Command | What it does |
 |---------|--------------|
-| `/tk:map` | **Run this first.** Scans your codebase, creates `AGENTS.md` with project context, sets up `.planning/` directory. |
-| `/tk:build` | Builds features using a 7-phase workflow: Discovery → Exploration → Questions → Architecture → Implementation → Review → Summary |
+| `/tk:map` | **Run this first.** Scans your codebase, creates `AGENTS.md` with project context, sets up `.tk/` directory. |
+| `/tk:build` | Builds features using a 7-phase workflow: Discovery -> Exploration -> Questions -> Architecture -> Implementation -> Review -> Summary |
 | `/tk:qa` | Tests your code with security vulnerability scanning for injection, XSS, secrets, and more. |
 | `/tk:deploy` | Deploys with pre-flight checks and post-deploy verification. Auto-rollback on failure. |
 
@@ -118,9 +118,9 @@ Restart Claude Code, then run:
 | Command | What it does |
 |---------|--------------|
 | `/tk:debug` | Systematic debugging. Hypothesis testing, auto-revert on failures, escalation when stuck. |
-| `/tk:review` | Code review with 4 parallel reviewers. Only reports high-confidence issues. |
+| `/tk:review` | Code review with parallel reviewers. Only reports high-confidence issues. |
 | `/tk:clean` | Removes dead code, unused deps, console.logs. Refactors for clarity. |
-| `/tk:design` | Creates distinctive frontend interfaces—unique typography, bold colors, no AI slop. |
+| `/tk:design` | Creates distinctive frontend interfaces--unique typography, bold colors, no AI slop. |
 
 ### Configuration
 
@@ -133,7 +133,7 @@ Restart Claude Code, then run:
 | Command | What it does |
 |---------|--------------|
 | `/tk:doc` | Generates README, API docs, architecture diagrams, inline comments. |
-| `/tk:workflow` | **Visual workflow documentation.** Generates self-contained HTML with SVG diagrams, executive summaries, data flow analysis, real-world examples, and improvement recommendations. Perfect for team onboarding or architecture reviews. |
+| `/tk:workflow` | **Visual workflow documentation.** Generates self-contained HTML with SVG diagrams, executive summaries, data flow analysis, real-world examples, and improvement recommendations. Supports `--audience:customer` and `--audience:executive` modes. |
 | `/tk:opinion` | **Honest project audit.** Asks questions, then gives direct feedback on architecture, code quality, dependencies, testing, docs, and MVP progress. |
 | `/tk:init` | Scaffolds new projects with your preferred stack and tooling. |
 | `/tk:resume` | Picks up where you left off if interrupted. |
@@ -146,19 +146,24 @@ Restart Claude Code, then run:
 
 ## Modes
 
-Every command supports three modes:
+Every command supports three modes. **All modes now use parallel SubAgents for maximum power:**
 
 | Mode | When to use | What happens |
 |------|-------------|--------------|
-| `light` | Quick fixes, simple tasks | Fast, minimal questions, no SubAgents |
-| `medium` | Standard features | Balanced, 2-3 questions, structured |
-| `heavy` | Complex features | Full workflow, parallel SubAgents + DOCS |
+| `light` | Standard features | Full 7-phase workflow with parallel SubAgents + DOCS agent |
+| `medium` | Complex features | 2x SubAgents per phase + Validator agents + deep documentation |
+| `heavy` | Critical work | 3x SubAgents + Cross-validators + Devil's Advocate + maximum documentation |
 
 ```bash
-/tk:build light    # Just build it
-/tk:build medium   # Ask questions, then build
-/tk:build heavy    # Full 7-phase with parallel agents
+/tk:build light    # 3 explorers -> 3 architects -> 3 reviewers + DOCS
+/tk:build medium   # 5 explorers -> 5 architects -> 5 reviewers + DOCS + Validators
+/tk:build heavy    # 8 explorers -> 6 architects -> 6 reviewers + DOCS + Cross-validators + Devil's Advocate
 ```
+
+**Mode Philosophy:**
+- **light**: What "heavy" used to be. Full parallel SubAgent workflow. This is now the baseline.
+- **medium**: Double the agents, deeper analysis, cross-validation between agents.
+- **heavy**: Maximum parallelization. Multiple review passes. Agents that challenge and verify other agents' work.
 
 ---
 
@@ -183,7 +188,7 @@ TK uses **progressive disclosure** (inspired by [claude-mem](https://github.com/
 
 ---
 
-## `/tk:rules` — Global Agent Rules
+## `/tk:rules` -- Global Agent Rules
 
 Set rules that ALL TK agents must follow:
 
@@ -213,7 +218,7 @@ Rules are stored in `.tk/RULES.md` and enforced on every command.
 
 ---
 
-## `/tk:opinion` — Project Audit
+## `/tk:opinion` -- Project Audit
 
 Get honest, actionable feedback on your project:
 
@@ -222,12 +227,12 @@ Get honest, actionable feedback on your project:
 ```
 
 **What it checks:**
-- Architecture — Is the structure sensible? Any anti-patterns?
-- Code Quality — Consistency, dead code, error handling
-- Dependencies — Bloat, security issues, outdated packages
-- Testing — Coverage, meaningful tests, CI integration
-- Documentation — Can someone new get started?
-- MVP Progress — How far off are you? Any scope creep?
+- Architecture -- Is the structure sensible? Any anti-patterns?
+- Code Quality -- Consistency, dead code, error handling
+- Dependencies -- Bloat, security issues, outdated packages
+- Testing -- Coverage, meaningful tests, CI integration
+- Documentation -- Can someone new get started?
+- MVP Progress -- How far off are you? Any scope creep?
 
 **What you get:**
 - What's working (specific praise)
@@ -238,25 +243,40 @@ Get honest, actionable feedback on your project:
 
 ---
 
-## Heavy Mode SubAgents
+## SubAgent Documentation
 
-When using `heavy` mode, TK spawns specialized SubAgents in parallel:
+**NEW: Every SubAgent documents its work in real-time.**
 
-| Command | SubAgents |
-|---------|-----------|
-| `map` | 6 mappers + DOCS |
-| `build` | 3 explorers → 3 architects → 3 reviewers + DOCS |
-| `workflow` | 1 mapper + 1 diagrammer + 1 analyst + 1 OSI specialist + 1 metrics + DOCS |
-| `opinion` | 4 auditors (architecture, code, deps, DX) + DOCS |
-| `design` | 3 researchers + 4 specialists + DOCS |
-| `debug` | 4 investigators + 3 fixers + DOCS |
-| `qa` | 6 specialists (security, edge cases, perf, a11y) + DOCS |
-| `review` | 4 reviewers + DOCS |
-| `deploy` | 4 pre-flight + 4 post-deploy + DOCS |
+All SubAgent findings are logged to `.tk/agents/{agent-id}.md`:
+- Start time and task
+- Every file read and why
+- Every decision and reasoning
+- Findings as they're discovered
+- Summary before returning
+
+This creates a complete audit trail of all agent work.
 
 ---
 
-## `/tk:workflow` — Visual Documentation
+## Mode SubAgents
+
+When using any mode, TK spawns specialized SubAgents in parallel:
+
+| Command | Light | Medium | Heavy |
+|---------|-------|--------|-------|
+| `map` | 6 mappers + DOCS | + 4 additional + Validator | + 3 extended + 3 Cross-validators |
+| `build` | 3 explorers -> 3 architects -> 3 reviewers + DOCS | 5 -> 5 -> 5 + Validators | 8 -> 6 -> 6 + Cross-validators + Devil's Advocate |
+| `workflow` | 6 specialists + DOCS | + 4 additional + Validator | + 3 extended + 3 Cross-validators |
+| `opinion` | 4 auditors + DOCS | + 3 additional + Validator | + 3 extended + Devil's Advocate |
+| `design` | 3 researchers + 4 specialists + DOCS | + 3 additional + Validator | + 2 extended + 3 Cross-validators |
+| `debug` | 3 investigators + DOCS | + 2 investigators + 3 fixers + Validator | + 3 investigators + Cross-validators + 2 Fix-Verifiers |
+| `qa` | 6 specialists + DOCS | + 3 additional + Validator | + 3 extended + 3 Cross-validators |
+| `review` | 4 reviewers + DOCS | + 2 additional + Validator | + 2 extended + 3 Cross-validators |
+| `deploy` | 4 pre-flight + 4 post-deploy + DOCS | + 4 extended + Validator | + 3 extended + 3 Cross-validators |
+
+---
+
+## `/tk:workflow` -- Visual Documentation
 
 Generate comprehensive, self-contained HTML documentation with visual diagrams, analytical charts, and OSI model analysis:
 
@@ -264,6 +284,18 @@ Generate comprehensive, self-contained HTML documentation with visual diagrams, 
 /tk:workflow heavy How does the authentication flow work?
 /tk:workflow medium Document the payment processing system
 ```
+
+**Audience Modes:**
+```bash
+/tk:workflow heavy --audience:customer How does checkout work?
+/tk:workflow medium --audience:executive Document the payment system
+```
+
+| Flag | What to Show | What to Hide |
+|------|--------------|--------------|
+| (default) | Everything (internal documentation) | Only secrets |
+| `--audience:customer` | User-facing features, frontend, UX flows | Backend, database, API internals |
+| `--audience:executive` | High-level overview, metrics, recommendations | Implementation details |
 
 **What it generates:**
 
@@ -279,50 +311,23 @@ Generate comprehensive, self-contained HTML documentation with visual diagrams, 
 | **Secrets Redaction** | Auto-redacts API keys, passwords, tokens (security-first) |
 | **Professional Icons** | SVG icons only, no emojis |
 
-**Output files:**
-| Mode | Output |
-|------|--------|
-| `light` | `workflow-overview.html` — Quick overview + main diagram |
-| `medium` | `workflow-full.html` + `workflow-executive.html` — Dual-page with charts |
-| `heavy` | Full dual-page output with OSI analysis + parallel SubAgents |
-
-**Charts included:**
-- Component distribution (pie)
-- Components per OSI layer (bar)
-- Dependency complexity trend (line)
-- Code distribution (pie)
-- Inline sparklines for metrics
-
-**Use cases:**
-- Team doesn't understand how a system works
-- Onboarding new developers
-- Executive briefings on technical systems
-- Pre-refactor analysis
-- Knowledge transfer
-- Network layer analysis
-
-**Security & Quality:**
-- Secrets auto-redacted (API keys, passwords, tokens, connection strings)
-- No emojis — professional SVG icons only
-- SVG validation ensures clean rendering (no black box artifacts)
-
 ---
 
-## `/tk:build` — 7-Phase Workflow
+## `/tk:build` -- 7-Phase Workflow
 
 | Phase | What happens |
 |-------|--------------|
 | 1. Discovery | Understand requirements, create task list |
 | 2. Exploration | Trace existing patterns, identify key files |
 | 3. Questions | **Mandatory.** Resolve all ambiguities before design |
-| 4. Architecture | Multiple approaches → trade-offs → you choose |
+| 4. Architecture | Multiple approaches -> trade-offs -> you choose |
 | 5. Implementation | Build with approval, follow conventions |
-| 6. Review | Check bugs, quality, conventions (≥80% confidence) |
+| 6. Review | Check bugs, quality, conventions (>=80% confidence) |
 | 7. Summary | Document what was built |
 
 ---
 
-## `/tk:qa` — Security Scanning
+## `/tk:qa` -- Security Scanning
 
 | Vulnerability | What TK checks |
 |---------------|----------------|
@@ -332,6 +337,35 @@ Generate comprehensive, self-contained HTML documentation with visual diagrams, 
 | Secrets | Hardcoded passwords, API keys |
 | Dependencies | `npm audit` vulnerabilities |
 | GitHub Actions | `${{ }}` injection in workflows |
+
+---
+
+## File Structure
+
+All TK files are now consolidated under `.tk/`:
+
+```
+AGENTS.md              # Project knowledge base (root for Claude Code convention)
+.tk/
++-- VERSION            # Project version tracking
++-- RULES.md           # Global rules for all agents
++-- COORDINATION.md    # Multi-agent coordination
++-- agents/            # Per-agent documentation logs
++-- locks/             # File locking for concurrent agents
++-- planning/
+|   +-- STATE.md       # Current work state
+|   +-- HISTORY.md     # Work log
+|   +-- ISSUES.md      # Known issues
+|   +-- PATTERNS.md    # Discovered patterns
+|   +-- DECISIONS.md   # Decisions with rationale
+|   +-- CODEBASE.md    # File map
+|   +-- ARCHITECTURE.md # System design
++-- debug/
+|   +-- attempts.md    # Debug attempt log
+|   +-- error.txt      # Current error capture
++-- qa/
+|   +-- full-report.md # QA findings
+```
 
 ---
 
@@ -354,39 +388,23 @@ See [mcp/README.md](mcp/README.md) for details.
 
 ---
 
-## Files Created
-
-```
-AGENTS.md              # Project knowledge base
-.planning/
-├── STATE.md           # Current work state
-├── HISTORY.md         # Work log
-├── ISSUES.md          # Known issues
-├── PATTERNS.md        # Discovered patterns
-├── DECISIONS.md       # Decisions with rationale
-├── CODEBASE.md        # File map
-└── ARCHITECTURE.md    # System design
-```
-
----
-
 ## Plugin Structure
 
 TK follows the Claude Code plugin format:
 
 ```
 Toolkit/
-├── .claude-plugin/
-│   └── plugin.json      # Plugin metadata
-├── commands/            # Slash commands
-│   ├── _shared.md       # Shared behaviors
-│   ├── map.md
-│   ├── build.md
-│   ├── design.md
-│   └── ...
-├── mcp/                 # MCP integration
-├── tk.md                # Main router
-└── README.md
++-- .claude-plugin/
+|   +-- plugin.json      # Plugin metadata
++-- commands/            # Slash commands
+|   +-- _shared.md       # Shared behaviors
+|   +-- map.md
+|   +-- build.md
+|   +-- design.md
+|   +-- ...
++-- mcp/                 # MCP integration
++-- tk.md                # Main router
++-- README.md
 ```
 
 ---

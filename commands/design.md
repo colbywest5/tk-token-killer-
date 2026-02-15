@@ -13,7 +13,7 @@ allowed-tools:
 
 $import(commands/tk/_shared.md)
 
-# TK v1.1.0 | /tk:design [mode]
+# TK v2.0.0 | /tk:design [mode]
 
 ## STEP 0: LOAD RULES (SILENT)
 
@@ -42,8 +42,7 @@ Create production-grade frontend interfaces with exceptional design quality. Avo
 
 ### 2. Design Thinking (before ANY code)
 
-**LIGHT:** Quick mental model, pick aesthetic, build
-**MEDIUM/HEAVY:** Answer these explicitly:
+**ALL MODES:** Answer these explicitly:
 
 - **Purpose:** What problem? Who uses it?
 - **Tone:** Pick an EXTREME - brutally minimal, maximalist chaos, retro-futuristic, organic/natural, luxury/refined, playful/toy-like, editorial/magazine, brutalist/raw, art deco/geometric, soft/pastel, industrial/utilitarian
@@ -52,13 +51,7 @@ Create production-grade frontend interfaces with exceptional design quality. Avo
 
 ### 3. Mode Execution
 
-**LIGHT (quick component):**
-- Pick distinctive aesthetic direction (don't overthink, just commit)
-- Build production-ready code
-- Focus on: unique typography, bold color choice, one memorable detail
-- No generic defaults - every choice intentional
-
-**MEDIUM (full design process):**
+**LIGHT (full design process with SubAgents):**
 Interview user (3-5 questions):
 - What's the vibe/mood? (show tone options)
 - Any brand colors/fonts to respect?
@@ -66,27 +59,61 @@ Interview user (3-5 questions):
 - Target audience?
 - Dark or light theme preference?
 
-Then implement with attention to:
-- **Typography:** Distinctive display + refined body font pairing (Google Fonts, not defaults)
-- **Color:** CSS variables, dominant + sharp accent palette
-- **Motion:** CSS animations for load (staggered animation-delay), hover states that surprise
-- **Composition:** Asymmetry, overlap, grid-breaking, generous negative space OR controlled density
-- **Atmosphere:** Gradient meshes, noise textures, geometric patterns, layered transparencies, grain overlays
-
-**HEAVY (research + parallel specialists):**
+Launch 3 research SubAgents + 4 specialists:
 ```
 Phase 1 - Research:
-SubAgent 1: Research aesthetic direction - find 3 reference sites/designs matching the vibe
-SubAgent 2: Research typography - find perfect font pairing for this context
-SubAgent 3: Research color theory - build palette that matches tone
-SubAgent DOCS: Document design decisions in .planning/DESIGN.md
+SubAgent Research 1: "Research aesthetic direction - find 3 reference sites/designs matching the vibe."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+SubAgent Research 2: "Research typography - find perfect font pairing for this context."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+SubAgent Research 3: "Research color theory - build palette that matches tone."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+SubAgent DOCS: "Document design decisions in .tk/planning/DESIGN.md"
+  CRITICAL: Document everything to .tk/agents/DOCS-{id}.md
 
 Phase 2 - Build (parallel specialists):
-SubAgent 1 (Structure): HTML/component architecture, semantic markup, accessibility
-SubAgent 2 (Styling): CSS/styling system, variables, responsive breakpoints
-SubAgent 3 (Motion): Animations, transitions, micro-interactions, scroll effects
-SubAgent 4 (Polish): Visual details, textures, shadows, custom cursors, grain overlays
-SubAgent DOCS: Document component API, usage examples, design rationale
+SubAgent Structure: "HTML/component architecture, semantic markup, accessibility."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+SubAgent Styling: "CSS/styling system, variables, responsive breakpoints."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+SubAgent Motion: "Animations, transitions, micro-interactions, scroll effects."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+SubAgent Polish: "Visual details, textures, shadows, custom cursors, grain overlays."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+```
+
+**MEDIUM (deeper research + validation):**
+Everything in LIGHT, plus:
+```
+Additional Research:
+SubAgent Research 4: "Analyze competitor designs - what works, what doesn't."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+SubAgent Research 5: "Research accessibility best practices for chosen aesthetic."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+Additional Build:
+SubAgent Responsive: "Test and optimize for all breakpoints."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+SubAgent Validator: "Review all components for consistency and polish."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+```
+
+**HEAVY (maximum parallelization + cross-validation):**
+Everything in MEDIUM, plus:
+```
+Extended Research:
+SubAgent Research 6: "Deep-dive into chosen aesthetic's history and best examples."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+SubAgent Research 7: "Research performance impact of design choices."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+Cross-validation:
+SubAgent Cross-validator 1: "Review all design decisions against user requirements."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+SubAgent Cross-validator 2: "Fresh eyes review - identify inconsistencies and missed opportunities."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+SubAgent Devil's Advocate: "Challenge design choices - what could be bolder? What's too safe?"
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
 ```
 
 ### 4. Implementation Checklist
@@ -103,8 +130,8 @@ Before completion, verify:
 ### 5. Completion
 
 ```bash
-# Update STATE.md, HISTORY.md
-# If patterns discovered, add to PATTERNS.md
+# Update .tk/planning/STATE.md, .tk/planning/HISTORY.md
+# If patterns discovered, add to .tk/planning/PATTERNS.md
 git add -A && git commit -m "feat: [component/page name] - [aesthetic direction]"
 ```
 

@@ -11,7 +11,7 @@ allowed-tools:
 
 $import(commands/tk/_shared.md)
 
-# TK v1.1.0 | /tk:deploy [mode]
+# TK v2.0.0 | /tk:deploy [mode]
 
 ## STEP 0: LOAD RULES + VERSION (SILENT)
 
@@ -29,14 +29,34 @@ Deploy to production.
 ### 1. Pre-flight
 ```bash
 # Must be clean
-[ $(git status --porcelain | wc -l) -gt 0 ] && echo "✗ Uncommitted changes - commit first" && exit 1
+[ $(git status --porcelain | wc -l) -gt 0 ] && echo "[ERROR] Uncommitted changes - commit first" && exit 1
 echo "Branch: $(git branch --show-current)"
-mkdir -p .deploy
+mkdir -p .tk/deploy
 ```
 
 ### 2. Mode Execution
 
-**LIGHT (just deploy):**
+**LIGHT (pre-flight + deploy + verify with SubAgents):**
+```
+Pre-flight (4 parallel):
+SubAgent Tests: "Run full test suite, verify coverage >70%."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+SubAgent Security: "Run npm audit, check no secrets in code, verify auth."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+SubAgent Build: "Verify build succeeds, bundle size reasonable, env vars documented."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+SubAgent Config: "Validate platform config, env vars set, SSL configured."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+SubAgent DOCS: "Create .tk/deploy/pre-flight-report.md"
+  CRITICAL: Document everything to .tk/agents/DOCS-{id}.md
+```
+-> ALL must pass before deploy
+
+Deploy:
 ```bash
 # Auto-detect and deploy
 [ -f "vercel.json" ] && npx vercel --prod
@@ -44,41 +64,67 @@ mkdir -p .deploy
 [ -f "Dockerfile" ] && docker build -t app:$(git rev-parse --short HEAD) . && docker push
 ```
 
-**MEDIUM (pre-flight + deploy + verify):**
-```bash
-# Pre-flight checks (all must pass)
-npm test && npm run typecheck && npm run build
-CRITICAL=$(npm audit --json 2>/dev/null | grep -c '"severity":"critical"')
-[ "$CRITICAL" -gt 0 ] && echo "⛔ $CRITICAL critical vulns - blocked" && exit 1
-
-# Deploy
-npx vercel --prod 2>&1 | tee .deploy/output.txt
-DEPLOY_URL=$(grep -oP 'https://[^\s]+' .deploy/output.txt | tail -1)
-
-# Verify
-sleep 10
-curl -sf "$DEPLOY_URL/api/health" && echo "✓ Health OK"
-curl -sf "$DEPLOY_URL" && echo "✓ Homepage OK"
-```
-
-**HEAVY (full pipeline):**
-```
-Pre-flight (4 parallel):
-SubAgent 1 (Tests): Full suite + coverage >70%
-SubAgent 2 (Security): npm audit, no secrets in code, auth verified
-SubAgent 3 (Build): Build succeeds, bundle size reasonable, env vars documented
-SubAgent 4 (Config): Platform config valid, env vars set, SSL configured
-SubAgent DOCS: Create .deploy/pre-flight-report.md
-→ ALL must pass
-
-Deploy
-
 Post-deploy (4 parallel):
-SubAgent 1 (Health): Health endpoint, response time <500ms
-SubAgent 2 (Smoke): Homepage, login, core feature, API endpoints
-SubAgent 3 (Logs): Check for errors in production logs
-SubAgent 4 (Performance): TTFB, page load, Core Web Vitals
-SubAgent DOCS: Create .deploy/deployment-report.md
+```
+SubAgent Health: "Check health endpoint, response time <500ms."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+SubAgent Smoke: "Test homepage, login, core feature, API endpoints."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+SubAgent Logs: "Check for errors in production logs."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+SubAgent Performance: "Check TTFB, page load, Core Web Vitals."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+SubAgent DOCS: "Create .tk/deploy/deployment-report.md"
+  CRITICAL: Document everything to .tk/agents/DOCS-{id}.md
+```
+
+**MEDIUM (deeper verification + validation):**
+Everything in LIGHT, plus:
+```
+Extended Pre-flight:
+SubAgent Dependencies: "Verify all dependencies are production-ready, no dev deps in prod."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+SubAgent Migration: "Check for pending database migrations, schema changes."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+Extended Post-deploy:
+SubAgent Integration: "Verify all external integrations work in production."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+SubAgent Monitoring: "Verify monitoring and alerting is configured."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+SubAgent Validator: "Cross-check all deployment findings."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+```
+
+**HEAVY (maximum verification + cross-validation):**
+Everything in MEDIUM, plus:
+```
+Extended Verification:
+SubAgent Rollback-Plan: "Document rollback procedure, verify it's tested."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+SubAgent Load-Test: "Run basic load test, verify system handles expected traffic."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+SubAgent Compliance: "Verify deployment meets compliance requirements (if any)."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+Cross-Validation:
+SubAgent Cross-validator 1: "Verify pre-flight findings against actual deployment."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+SubAgent Cross-validator 2: "Verify post-deploy findings, confirm no regressions."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+SubAgent Fresh-Eyes: "Independent verification - find issues other agents missed."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
 ```
 
 ### 3. Completion
@@ -86,7 +132,7 @@ SubAgent DOCS: Create .deploy/deployment-report.md
 VERSION=$(date +%Y.%m.%d-%H%M)
 git tag -a "deploy-$VERSION" -m "Deployed to production"
 git push origin "deploy-$VERSION"
-# Update STATE.md, HISTORY.md
+# Update .tk/planning/STATE.md, .tk/planning/HISTORY.md
 ```
 
 Report: URL, commit, pre-flight status, verification status, tag

@@ -11,7 +11,7 @@ allowed-tools:
 
 $import(commands/tk/_shared.md)
 
-# TK v1.1.0 | /tk:clean [mode]
+# TK v2.0.0 | /tk:clean [mode]
 
 ## STEP 0: LOAD RULES (SILENT)
 
@@ -24,53 +24,94 @@ Clean the codebase.
 
 ### 1. Pre-flight
 ```bash
-mkdir -p .cleanup
+mkdir -p .tk/cleanup
 git stash push -m "pre-cleanup-$(date +%s)"  # Checkpoint
 ```
 
 ### 2. Mode Execution
 
-**LIGHT (quick wins):**
+**LIGHT (4 parallel cleaners):**
+```
+SubAgent Dead-Code: "Find unused exports, unreachable code, commented-out code, unused variables."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+SubAgent Dependencies: "Find unused deps, outdated packages, security vulnerabilities."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+SubAgent Refactoring: "Find duplicates, long functions, deep nesting, pattern violations."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+SubAgent Organization: "Find import issues, naming problems, missing index files, circular deps."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+SubAgent DOCS: "Document all findings in .tk/cleanup/report.md"
+  CRITICAL: Document everything to .tk/agents/DOCS-{id}.md
+```
+
+Also run:
 ```bash
 # Console.logs
-grep -rn "console.log" --include="*.ts" --include="*.tsx" | grep -v node_modules | grep -v "\.test\." > .cleanup/console-logs.txt
-# After confirmation, remove them
-sed -i '/console\.log/d' [files]
-
-# Unused imports via lint
-npm run lint -- --fix
+grep -rn "console.log" --include="*.ts" --include="*.tsx" | grep -v node_modules | grep -v "\.test\." > .tk/cleanup/console-logs.txt
 
 # Count TODOs
-grep -rn "TODO\|FIXME" --include="*.ts" | grep -v node_modules > .cleanup/todos.txt
+grep -rn "TODO\|FIXME" --include="*.ts" | grep -v node_modules > .tk/cleanup/todos.txt
 
-git commit -m "chore: remove console.logs, fix imports"
+# Lint fix
+npm run lint -- --fix
 ```
 
-**MEDIUM (full cleanup):**
-- Everything in light, plus:
-- **Dead code:** `npx ts-prune` for unused exports
-- **Dependencies:** `npx depcheck` for unused deps, `npm outdated`, `npm audit`
-- **Large files:** Files >500 lines
-- Offer to fix each category, atomic commits per fix type
+Offer to fix each category, atomic commits per fix type.
 
-**HEAVY (4 parallel cleaners):**
+**MEDIUM (deeper analysis + validation):**
+Everything in LIGHT, plus:
 ```
-SubAgent 1 (Dead Code): Unused exports, unreachable code, commented-out code, unused variables
-SubAgent 2 (Dependencies): Remove unused, update outdated, fix vulns, check duplicates
-SubAgent 3 (Refactoring): Extract duplicates, split long functions, flatten nesting, align with PATTERNS.md
-SubAgent 4 (Organization): Organize imports, fix naming, create index files, fix circular deps
-SubAgent DOCS: Document all changes in .cleanup/report.md, update CODEBASE.md
+Additional SubAgents:
+SubAgent Type-Safety: "Find any type issues, loose types, missing types."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+SubAgent Test-Cleanup: "Find duplicate tests, outdated tests, test smells."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+SubAgent Config-Cleanup: "Find unused config, duplicate env vars, outdated settings."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+SubAgent Validator: "Cross-check findings, identify safe vs risky cleanups."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+```
+
+**HEAVY (maximum cleanup + cross-validation):**
+Everything in MEDIUM, plus:
+```
+Extended Cleanup:
+SubAgent Performance: "Find performance anti-patterns, unnecessary re-renders."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+SubAgent Security: "Find security smells, potential vulnerabilities."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+SubAgent Documentation: "Find outdated comments, missing docs, incorrect docs."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+Cross-Validation:
+SubAgent Cross-validator 1: "Verify Dead-Code + Dependencies + Refactoring findings."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+SubAgent Cross-validator 2: "Verify Organization + Type-Safety + Test findings."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+SubAgent Fresh-Eyes: "Independent review - find issues other cleaners missed."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
 ```
 
 ### 3. Verification
 ```bash
-npm run typecheck && npm test && npm run build || (echo "Cleanup broke something - rolling back" && git stash pop)
+npm run typecheck && npm test && npm run build || (echo "[ERROR] Cleanup broke something - rolling back" && git stash pop)
 ```
 
 ### 4. Completion
 ```bash
-# Update CODEBASE.md with removed files
-# Update STATE.md, HISTORY.md
+# Update .tk/planning/CODEBASE.md with removed files
+# Update .tk/planning/STATE.md, .tk/planning/HISTORY.md
 git commit -m "chore: cleanup codebase"
 ```
 

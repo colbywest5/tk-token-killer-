@@ -8,7 +8,14 @@ allowed-tools:
   - SubAgent
 ---
 
-# /tk:[$cmd] [mode]
+$import(commands/tk/_shared.md)
+
+# TK v2.0.0 | /tk:doc [mode]
+
+## STEP 0: LOAD RULES (SILENT)
+
+Before ANY action: silently read .tk/RULES.md and follow ALL rules constantly.
+Do not display rules. Just follow them.
 
 Generate or update documentation.
 
@@ -24,30 +31,64 @@ find . -name "*.tsx" | grep -v node_modules | wc -l  # Components
 
 ### 2. Mode Execution
 
-**LIGHT (README only):**
-Generate README.md:
-- Project name + description
-- Quick start (prerequisites, install, config, run)
-- Scripts list
-- License
+**LIGHT (comprehensive docs with SubAgents):**
+Launch 4 parallel generators:
+```
+SubAgent README: "Generate comprehensive README: features, prerequisites, install, config, usage, dev guide, testing, deploy, contributing."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
 
-```bash
-git add README.md && git commit -m "docs: update README"
+SubAgent API: "Document all API endpoints: method, path, body, response, example curl."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+SubAgent Architecture: "Document system overview, component diagrams, data flow, design decisions."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+SubAgent Code-Comments: "Add JSDoc/TSDoc to exported functions, explain complex logic."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+SubAgent DOCS: "Create docs/INDEX.md, verify consistency, cross-link."
+  CRITICAL: Document everything to .tk/agents/DOCS-{id}.md
 ```
 
-**MEDIUM (README + API + Architecture):**
-- Everything in light, plus:
-- docs/API.md: All endpoints (method, path, body, response, example curl)
-- docs/ARCHITECTURE.md: Overview, mermaid diagram, key components, data flow
-- Update AGENTS.md if exists
-
-**HEAVY (4 parallel generators):**
+**MEDIUM (deeper documentation + validation):**
+Everything in LIGHT, plus:
 ```
-SubAgent 1 (README): Comprehensive - features, prerequisites, install, config, usage, dev guide, testing, deploy, contributing
-SubAgent 2 (API): All endpoints + OpenAPI spec if possible
-SubAgent 3 (Architecture): System overview, component diagrams, data flow, design decisions, tech debt
-SubAgent 4 (Code Commenter): Add JSDoc/TSDoc to exported functions, explain complex logic
-SubAgent DOCS: Create docs/INDEX.md, verify consistency, cross-link, check for outdated info
+Additional SubAgents:
+SubAgent Onboarding: "Create getting-started guide for new developers."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+SubAgent Troubleshooting: "Document common issues, gotchas, FAQs."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+SubAgent OpenAPI: "Generate OpenAPI spec if possible."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+SubAgent Validator: "Cross-check all docs for accuracy, outdated info, inconsistencies."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+```
+
+**HEAVY (maximum documentation + cross-validation):**
+Everything in MEDIUM, plus:
+```
+Extended Documentation:
+SubAgent Decisions: "Document all architectural decisions with rationale."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+SubAgent Security: "Document security model, auth flows, permissions."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+SubAgent Runbooks: "Create operational runbooks for deployment, monitoring, incidents."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+Cross-Validation:
+SubAgent Cross-validator 1: "Verify README + API + Architecture docs."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+SubAgent Cross-validator 2: "Verify Code-Comments + Onboarding + Troubleshooting docs."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+SubAgent Fresh-Eyes: "Independent review - find gaps, inconsistencies, missing docs."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
 ```
 
 ### 3. Completion

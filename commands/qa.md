@@ -12,7 +12,7 @@ allowed-tools:
 
 $import(commands/tk/_shared.md)
 
-# TK v1.1.0 | /tk:qa [mode]
+# TK v2.0.0 | /tk:qa [mode]
 
 ## STEP 0: LOAD RULES (SILENT)
 
@@ -39,142 +39,105 @@ Test systematically. Find bugs AND security vulnerabilities before users do.
 
 ### 1. Pre-flight
 ```bash
-mkdir -p .qa
-npm test --help 2>/dev/null && echo "✓ npm test available"
+mkdir -p .tk/qa
+npm test --help 2>/dev/null && echo "[OK] npm test available"
 ```
 
 ### 2. Mode Execution
 
-**LIGHT (~5 min smoke test + security scan):**
+**LIGHT (full test suite with parallel SubAgents):**
+Launch 6 parallel specialist SubAgents:
+```
+SubAgent Security: "Audit this codebase for vulnerabilities.
+   Check for: Command injection, Code injection, XSS, SQL/NoSQL injection,
+   Deserialization attacks, Hardcoded secrets, GitHub Actions injection,
+   CSRF validation, Auth bypass, Authorization gaps, npm audit vulnerabilities.
+   For each finding: Severity (CRITICAL/HIGH/MEDIUM/LOW), File:line, Attack vector, Safe alternative.
+   Only report confidence >=80."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+SubAgent Edge-Cases: "Try to break the application with unusual inputs:
+   Empty strings, 10KB strings, Null bytes, special characters,
+   Unicode edge cases (RTL, zero-width, emoji), Negative numbers,
+   floats where integers expected, Future dates, past dates,
+   Rapid repeated submissions, Concurrent conflicting updates."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+SubAgent Performance: "Find bottlenecks:
+   Slow endpoints (>500ms), N+1 database queries, Memory leaks,
+   Large bundle size, Missing indexes."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+SubAgent Accessibility: "Check a11y compliance:
+   Tab navigation, Focus indicators, ARIA labels, Alt text,
+   Color contrast (4.5:1), Keyboard-only operation."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+SubAgent Resilience: "Test failure handling:
+   Database connection fails, External API timeout/500,
+   Session expires mid-action, Malformed JSON payload,
+   Network loss mid-upload."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+SubAgent DOCS: "Compile comprehensive report:
+   .tk/qa/full-report.md (all findings by severity)
+   .tk/planning/ISSUES.md (update with issues)
+   AGENTS.md (add security gotchas discovered)"
+  CRITICAL: Document everything to .tk/agents/DOCS-{id}.md
+```
+
+Also run:
 ```bash
-# Functional
-timeout 30 npm run dev & sleep 10 && curl -s localhost:3000 && kill $!
+# Functional tests
 npm test && npm run typecheck && npm run build
 
-# Quick Security Scan
-echo "=== SECURITY SCAN ==="
-grep -rn "eval(" --include="*.js" --include="*.ts" | grep -v node_modules
-grep -rn "innerHTML\s*=" --include="*.js" --include="*.ts" | grep -v node_modules
-grep -rn "dangerouslySetInnerHTML" --include="*.tsx" --include="*.jsx" | grep -v node_modules
-grep -rn "child_process" --include="*.js" --include="*.ts" | grep -v node_modules
-npm audit --audit-level=critical
-```
-Report pass/fail. Flag any security patterns found.
-
-**MEDIUM (~15 min full coverage + security checklist):**
-Everything in light, plus:
-
-**Functional:**
-- `npm test -- --coverage`
-- Test all API endpoints
-- Edge cases: empty strings, long strings, special chars, null, unicode
-
-**Security Checklist:**
-```bash
-echo "=== FULL SECURITY AUDIT ==="
-
-# JavaScript/TypeScript
-grep -rn "eval(" --include="*.js" --include="*.ts" | grep -v node_modules
-grep -rn "new Function" --include="*.js" --include="*.ts" | grep -v node_modules
-grep -rn "innerHTML" --include="*.js" --include="*.ts" --include="*.tsx" | grep -v node_modules
-grep -rn "dangerouslySetInnerHTML" --include="*.tsx" --include="*.jsx" | grep -v node_modules
-grep -rn "document.write" --include="*.js" --include="*.ts" | grep -v node_modules
-grep -rn "child_process" --include="*.js" --include="*.ts" | grep -v node_modules
-grep -rn "exec(" --include="*.js" --include="*.ts" | grep -v node_modules
-
-# Python
-grep -rn "pickle" --include="*.py"
-grep -rn "os.system" --include="*.py"
-grep -rn "eval(" --include="*.py"
-grep -rn "exec(" --include="*.py"
-
-# GitHub Actions
-find .github/workflows -name "*.yml" -o -name "*.yaml" | xargs grep -l '\${{.*}}' | xargs grep -n 'run:'
-
-# Secrets in code
-grep -rn "password\s*=" --include="*.js" --include="*.ts" --include="*.py" | grep -v node_modules
-grep -rn "api_key\s*=" --include="*.js" --include="*.ts" --include="*.py" | grep -v node_modules
-grep -rn "secret" --include="*.js" --include="*.ts" --include="*.py" | grep -v node_modules
-
-# Dependency audit
+# Security scan
 npm audit
 ```
 
-Create .planning/ISSUES.md entries for findings with severity ratings.
-
-**HEAVY (~30 min, 6 parallel specialists):**
+**MEDIUM (deeper analysis + validation):**
+Everything in LIGHT, plus:
 ```
-Spawn simultaneously:
+Additional SubAgents:
+SubAgent API-Tester: "Test all API endpoints systematically:
+   Valid inputs, boundary conditions, auth requirements, rate limiting."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
 
-SubAgent 1 (Security Specialist):
-  "You are a security expert. Audit this codebase for vulnerabilities.
-   
-   Check for:
-   - Command injection (exec, os.system, child_process)
-   - Code injection (eval, new Function)
-   - XSS (innerHTML, dangerouslySetInnerHTML, document.write)
-   - SQL/NoSQL injection in queries
-   - Deserialization attacks (pickle)
-   - Hardcoded secrets/credentials
-   - GitHub Actions workflow injection
-   - CSRF token validation
-   - Authentication bypass possibilities
-   - Authorization gaps (can user A access user B's data?)
-   - npm audit vulnerabilities
-   
-   For each finding:
-   - Severity: CRITICAL/HIGH/MEDIUM/LOW
-   - File:line
-   - Attack vector
-   - Safe alternative
-   
-   Only report confidence ≥80."
+SubAgent Integration: "Test component integrations:
+   Data flow between services, State management, Event handling."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
 
-SubAgent 2 (Edge Case Tester):
-  "Try to break the application with unusual inputs:
-   - Empty strings, 10KB strings
-   - Null bytes, special characters
-   - Unicode edge cases (RTL, zero-width, emoji)
-   - Negative numbers, floats where integers expected
-   - Future dates (year 3000), past dates (year 1900)
-   - Rapid repeated submissions
-   - Concurrent conflicting updates"
+SubAgent Validator: "Cross-check all findings. Identify false positives, confirm real issues."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+```
 
-SubAgent 3 (Performance Tester):
-  "Find bottlenecks:
-   - Slow endpoints (>500ms)
-   - N+1 database queries
-   - Memory leaks
-   - Large bundle size
-   - Missing indexes"
+**HEAVY (maximum coverage + cross-validation):**
+Everything in MEDIUM, plus:
+```
+Extended Testing:
+SubAgent Regression: "Check for regressions against previous functionality."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
 
-SubAgent 4 (Accessibility Tester):
-  "Check a11y compliance:
-   - Tab navigation
-   - Focus indicators
-   - ARIA labels
-   - Alt text
-   - Color contrast (4.5:1)
-   - Keyboard-only operation"
+SubAgent Stress: "Stress test under load - concurrent users, data volume."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
 
-SubAgent 5 (Chaos/Resilience Tester):
-  "Test failure handling:
-   - Database connection fails
-   - External API timeout/500
-   - Session expires mid-action
-   - Malformed JSON payload
-   - Network loss mid-upload"
+SubAgent Dependency-Audit: "Deep audit of all dependencies for known vulnerabilities."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
 
-SubAgent DOCS:
-  "Compile comprehensive report:
-   - .qa/full-report.md (all findings by severity)
-   - .planning/ISSUES.md (update with issues)
-   - AGENTS.md (add security gotchas discovered)"
+Cross-validation:
+SubAgent Cross-validator 1: "Verify Security + Edge-Cases + Performance findings."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+SubAgent Cross-validator 2: "Verify Accessibility + Resilience + API findings."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+SubAgent Fresh-Eyes: "Independent review - find issues other agents missed."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
 ```
 
 ### 3. Completion
 
-Merge findings into .qa/full-report.md:
+Merge findings into .tk/qa/full-report.md:
 - Executive summary
 - **CRITICAL** issues (blocks release)
 - **HIGH** issues (fix before release)
@@ -184,15 +147,15 @@ Merge findings into .qa/full-report.md:
 - Recommendations
 
 ```bash
-# Update STATE.md, HISTORY.md
-git add .qa/ .planning/ AGENTS.md
+# Update .tk/planning/STATE.md, .tk/planning/HISTORY.md
+git add .tk/qa/ .tk/planning/ AGENTS.md
 git commit -m "docs: QA report - [X] issues found"
 ```
 
 Report: Tests run, issues by severity, security findings, deploy readiness
 
 **Offer:**
-- "Fix critical issues now?" → run `/tk:debug` for each
+- "Fix critical issues now?" -> run `/tk:debug` for each
 - "Create GitHub issues?"
 - "Generate security report for stakeholders?"
 

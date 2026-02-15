@@ -11,7 +11,7 @@ allowed-tools:
 
 $import(commands/tk/_shared.md)
 
-# TK v1.1.0 | /tk:opinion [mode]
+# TK v2.0.0 | /tk:opinion [mode]
 
 ## STEP 0: LOAD RULES (SILENT)
 
@@ -20,26 +20,20 @@ Do not display rules. Just follow them.
 
 Audit the project and give honest, actionable opinions.
 
-## Load Shared
-
-```md
-$import(commands/tk/_shared.md)
-```
-
 ## Phase 1: Discovery Scan
 
 Scan the project to understand what exists:
 
 ```
 SCAN:
-├── README.md / docs/ → Project vision, goals, MVP definition
-├── package.json / requirements.txt / go.mod → Dependencies, scripts
-├── src/ / lib/ / app/ → Code structure, patterns
-├── tests/ / __tests__ / spec/ → Test coverage
-├── .github/ / CI config → Automation
-├── AGENTS.md / .planning/ → Existing project context
-├── TODO.md / ROADMAP.md / MVP.md → Planned work
-└── Git history → Activity, contributors, velocity
++-- README.md / docs/ -> Project vision, goals, MVP definition
++-- package.json / requirements.txt / go.mod -> Dependencies, scripts
++-- src/ / lib/ / app/ -> Code structure, patterns
++-- tests/ / __tests__ / spec/ -> Test coverage
++-- .github/ / CI config -> Automation
++-- AGENTS.md / .tk/planning/ -> Existing project context
++-- TODO.md / ROADMAP.md / MVP.md -> Planned work
++-- Git history -> Activity, contributors, velocity
 ```
 
 ## Phase 2: Ask Questions
@@ -57,87 +51,65 @@ QUESTION TYPES:
 
 WAIT for answers before proceeding.
 
-## Phase 3: Audit Categories
+## Phase 3: Mode Execution
 
-After answers, evaluate each area:
-
-### 3.1 Architecture
+**LIGHT (4 parallel auditors):**
 ```
-CHECK:
-- Is the structure conventional for this stack?
-- Are concerns separated properly?
-- Is there unnecessary complexity?
-- Are there obvious anti-patterns?
-- Would a new dev understand it in 10 min?
+SubAgent Architecture-Auditor: "Audit structure, patterns, complexity. Is it conventional for this stack? Would a new dev understand it in 10 min?"
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
 
-OPINION: [honest assessment]
-```
+SubAgent Code-Auditor: "Audit consistency, dead code, duplicate logic, error handling, type safety."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
 
-### 3.2 Code Quality
-```
-CHECK:
-- Consistency (naming, formatting, style)
-- Dead code / unused files
-- Duplicate logic
-- Error handling
-- Type safety (if applicable)
+SubAgent Deps-Auditor: "Audit dependencies - necessary or bloated? Security vulns? Outdated? Conflicting?"
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
 
-OPINION: [honest assessment]
+SubAgent DX-Auditor: "Audit DevX, onboarding, documentation. Can someone new get started?"
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+SubAgent DOCS: "Document findings in .tk/planning/AUDIT.md"
+  CRITICAL: Document everything to .tk/agents/DOCS-{id}.md
 ```
 
-### 3.3 Dependencies
+**MEDIUM (deeper audit + validation):**
+Everything in LIGHT, plus:
 ```
-CHECK:
-- Are deps necessary or bloated?
-- Are there security vulnerabilities? (npm audit / pip audit)
-- Outdated packages?
-- Conflicting or redundant deps?
+Additional SubAgents:
+SubAgent Testing-Auditor: "Audit test coverage, test quality, CI integration."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
 
-OPINION: [honest assessment]
-```
+SubAgent DevOps-Auditor: "Audit CI/CD, deployment, secrets handling."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
 
-### 3.4 Testing
-```
-CHECK:
-- Does test coverage exist?
-- Are tests meaningful or just coverage theater?
-- Are critical paths tested?
-- Can tests run in CI?
+SubAgent MVP-Auditor: "If MVP.md exists - what % complete? What's blocking? Scope creep?"
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
 
-OPINION: [honest assessment]
+SubAgent Validator: "Cross-check all findings, identify contradictions."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
 ```
 
-### 3.5 Documentation
+**HEAVY (maximum audit + cross-validation):**
+Everything in MEDIUM, plus:
 ```
-CHECK:
-- Is README useful or boilerplate?
-- Can someone new get started?
-- Are decisions documented?
-- Is there API documentation?
+Extended Audit:
+SubAgent Performance-Auditor: "Audit for performance issues, bottlenecks, scalability concerns."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
 
-OPINION: [honest assessment]
-```
+SubAgent Security-Auditor: "Audit security posture, auth, vulnerabilities."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
 
-### 3.6 DevOps / CI
-```
-CHECK:
-- Is there CI/CD?
-- Are builds reproducible?
-- Is deployment documented?
-- Are secrets handled properly?
+SubAgent Comparison-Auditor: "Compare to similar projects - what best practices are missing?"
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
 
-OPINION: [honest assessment]
-```
+Cross-Validation:
+SubAgent Cross-validator 1: "Verify Architecture + Code + Deps findings."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
 
-### 3.7 MVP Progress (if MVP.md / ROADMAP.md exists)
-```
-CHECK:
-- What % of MVP is complete?
-- What's blocking MVP?
-- What's been built that's NOT in MVP? (scope creep)
-- What's the critical path to launch?
+SubAgent Cross-validator 2: "Verify DX + Testing + DevOps findings."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
 
-OPINION: [honest assessment with estimate]
+SubAgent Devil's-Advocate: "Challenge all findings - what did we miss? What are we wrong about?"
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
 ```
 
 ## Phase 4: The Opinion
@@ -175,37 +147,6 @@ FORMAT:
 [1-2 spicy but honest opinions - things the dev might not want to hear but needs to]
 ```
 
-## Modes
-
-### Light Mode
-- Quick scan of structure + README
-- 2 questions max
-- 3-minute opinion
-- Focus: Is this on track or not?
-
-### Medium Mode
-- Full scan
-- 3-5 questions
-- Detailed audit of each category
-- Focus: What should change?
-
-### Heavy Mode
-- Deep analysis with SubAgents
-- Compare to similar projects
-- Research best practices for stack
-- Focus: How to make this excellent?
-
-## Heavy Mode SubAgents
-
-```
-SPAWN IN PARALLEL:
-├── architecture-auditor → Structure, patterns, complexity
-├── code-auditor → Quality, consistency, dead code
-├── deps-auditor → Dependencies, security, bloat
-├── dx-auditor → DevX, onboarding, documentation
-└── DOCS → Document findings in .planning/AUDIT.md
-```
-
 ## Output
 
 After opinion, offer:
@@ -223,8 +164,8 @@ Want me to run any of these?
 ## Rules
 
 1. BE HONEST - Don't sugarcoat. Be kind but direct.
-2. BE SPECIFIC - "Code is messy" → "The auth module mixes concerns"
+2. BE SPECIFIC - "Code is messy" -> "The auth module mixes concerns"
 3. BE ACTIONABLE - Every criticism comes with a solution
-4. RESPECT CONTEXT - Side project ≠ enterprise expectations
+4. RESPECT CONTEXT - Side project != enterprise expectations
 5. NO GATEKEEPING - Don't shame for not knowing things
 6. PRIORITIES MATTER - Focus on what helps most, not what's "proper"

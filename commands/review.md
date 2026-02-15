@@ -11,7 +11,7 @@ allowed-tools:
 
 $import(commands/tk/_shared.md)
 
-# TK v1.1.0 | /tk:review [mode]
+# TK v2.0.0 | /tk:review [mode]
 
 ## STEP 0: LOAD RULES (SILENT)
 
@@ -24,53 +24,79 @@ Review code changes like a senior engineer.
 
 ### 1. Get Scope
 ```bash
-mkdir -p .review
-git diff > .review/changes.diff
-git diff --name-only > .review/changed-files.txt
-FILES_COUNT=$(wc -l < .review/changed-files.txt)
+mkdir -p .tk/review
+git diff > .tk/review/changes.diff
+git diff --name-only > .tk/review/changed-files.txt
+FILES_COUNT=$(wc -l < .tk/review/changed-files.txt)
 ```
 If nothing staged, ask: uncommitted changes? branch vs main? specific files?
 
 ### 2. Load Context
 ```bash
-[ -f ".planning/PATTERNS.md" ] && cat .planning/PATTERNS.md
+[ -f ".tk/planning/PATTERNS.md" ] && cat .tk/planning/PATTERNS.md
 [ -f "AGENTS.md" ] && grep -A50 "## Conventions" AGENTS.md
 ```
 
 ### 3. Mode Execution
 
-**LIGHT (quick scan):**
-```bash
-for file in $(cat .review/changed-files.txt); do
-    grep -n "console.log\|TODO\|FIXME\|password\|secret\|any" "$file"
-done
+**LIGHT (4 parallel reviewers):**
 ```
-Check: obvious bugs, typos, missing error handling, hardcoded values, security flags
+SubAgent Correctness: "Review for logic errors, null handling, edge cases, race conditions. Only report confidence >=80."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
 
-**MEDIUM (thorough):**
-For each file, check all categories:
-- **Correctness:** Logic errors, off-by-one, null handling, edge cases, race conditions
-- **Security:** Injection, XSS, auth checks, secrets exposure, input validation
-- **Performance:** N+1 queries, unnecessary loops, memory leaks, blocking ops
-- **Maintainability:** Naming, types, duplication, complexity, comments
-- **Patterns:** Follows project patterns from PATTERNS.md
+SubAgent Security: "Review for injection, XSS, CSRF, auth bypass, secrets, input validation. Only report confidence >=80."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
 
-Create .review/report.md with issues by severity (critical/warning/suggestion)
+SubAgent Performance: "Review for N+1, re-renders, memoization, bundle size, memory leaks. Only report confidence >=80."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
 
-**HEAVY (4 parallel reviewers):**
+SubAgent Maintainability: "Review for naming, types, duplication, complexity, pattern violations. Only report confidence >=80."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+SubAgent DOCS: "Merge findings into .tk/review/report.md, note positive observations."
+  CRITICAL: Document everything to .tk/agents/DOCS-{id}.md
 ```
-SubAgent 1 (Correctness): Logic, null handling, edge cases, race conditions
-SubAgent 2 (Security): Injection, XSS, CSRF, auth bypass, secrets, input validation
-SubAgent 3 (Performance): N+1, re-renders, memoization, bundle size, memory leaks
-SubAgent 4 (Maintainability): Naming, types, duplication, complexity, pattern violations
-SubAgent DOCS: Merge into .review/final-report.md, update PATTERNS.md with good/anti-patterns
+
+**MEDIUM (6 reviewers + validator):**
+Everything in LIGHT, plus:
+```
+Additional SubAgents:
+SubAgent API-Review: "Review API contracts, error responses, validation. Only report confidence >=80."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+SubAgent Test-Coverage: "Identify missing tests for changed code. Only report confidence >=80."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+SubAgent Validator: "Cross-check all findings, identify false positives, rank by severity."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+```
+
+**HEAVY (8 reviewers + cross-validators):**
+Everything in MEDIUM, plus:
+```
+Extended Review:
+SubAgent Architecture: "Review architectural impact, coupling, cohesion. Only report confidence >=80."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+SubAgent Accessibility: "Review for a11y issues in UI changes. Only report confidence >=80."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+Cross-Validation:
+SubAgent Cross-validator 1: "Verify Correctness + Security + Performance findings."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+SubAgent Cross-validator 2: "Verify Maintainability + API + Test findings."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+SubAgent Fresh-Eyes: "Independent review - find issues other reviewers missed."
+  CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
 ```
 
 ### 4. Completion
 ```bash
 # Create final verdict: APPROVED or CHANGES REQUESTED
-# Update PATTERNS.md if new patterns found
-# Update STATE.md, HISTORY.md
+# Update .tk/planning/PATTERNS.md if new patterns found
+# Update .tk/planning/STATE.md, .tk/planning/HISTORY.md
 ```
 
 Report: Files reviewed, verdict, issues by severity, positive observations

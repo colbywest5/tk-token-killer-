@@ -5,7 +5,7 @@ description: Core behaviors for ALL /tk:command calls. Read this first.
 
 # Shared Behaviors
 
-**TK v1.1.0**
+**TK v2.0.0**
 
 ---
 
@@ -33,7 +33,7 @@ Inspired by [claude-mem](https://github.com/thedotmack/claude-mem)'s progressive
 [ -f ".tk/RULES.md" ] && cat .tk/RULES.md          # Small file, always load
 
 # Get file LISTS, not contents
-ls .planning/ 2>/dev/null                          # What files exist?
+ls .tk/planning/ 2>/dev/null                       # What files exist?
 ls .tk/agents/ 2>/dev/null                         # What agent logs exist?
 ```
 
@@ -41,21 +41,21 @@ ls .tk/agents/ 2>/dev/null                         # What agent logs exist?
 ```bash
 # Load based on current task
 # For BUILD tasks:
-[ -f ".planning/PATTERNS.md" ] && cat .planning/PATTERNS.md
-[ -f ".planning/ARCHITECTURE.md" ] && cat .planning/ARCHITECTURE.md
+[ -f ".tk/planning/PATTERNS.md" ] && cat .tk/planning/PATTERNS.md
+[ -f ".tk/planning/ARCHITECTURE.md" ] && cat .tk/planning/ARCHITECTURE.md
 
 # For DEBUG tasks:
-[ -f ".planning/ISSUES.md" ] && cat .planning/ISSUES.md
-[ -f ".planning/HISTORY.md" ] && tail -100 .planning/HISTORY.md
+[ -f ".tk/planning/ISSUES.md" ] && cat .tk/planning/ISSUES.md
+[ -f ".tk/planning/HISTORY.md" ] && tail -100 .tk/planning/HISTORY.md
 
 # For REVIEW tasks:
-[ -f ".planning/DECISIONS.md" ] && cat .planning/DECISIONS.md
+[ -f ".tk/planning/DECISIONS.md" ] && cat .tk/planning/DECISIONS.md
 ```
 
 **LAYER 3 - Load Only When Needed (High Tokens):**
 ```bash
 # Full file contents - ONLY when you need specific details
-cat .planning/CODEBASE.md                          # Full file map
+cat .tk/planning/CODEBASE.md                       # Full file map
 cat .tk/agents/*.md                                # All agent logs
 find . -name "*.ts" -exec cat {} \;                # Source files
 ```
@@ -67,7 +67,7 @@ find . -name "*.ts" -exec cat {} \;                # Source files
 | `/tk:build` | AGENTS.md summary, VERSION | PATTERNS, ARCHITECTURE | CODEBASE, source files |
 | `/tk:debug` | AGENTS.md summary, VERSION | ISSUES, HISTORY tail | Agent logs, full HISTORY |
 | `/tk:review` | AGENTS.md summary, VERSION | DECISIONS, PATTERNS | Full file contents |
-| `/tk:workflow` | AGENTS.md summary, VERSION | All .planning/ files | Agent logs, source analysis |
+| `/tk:workflow` | AGENTS.md summary, VERSION | All .tk/planning/ files | Agent logs, source analysis |
 | `/tk:qa` | AGENTS.md summary, VERSION | ISSUES, PATTERNS | Test files, source files |
 | `/tk:deploy` | AGENTS.md summary, VERSION | STATE, HISTORY tail | Full deployment logs |
 
@@ -85,8 +85,8 @@ find . -name "*.ts" -exec cat {} \;                # Source files
 AGENTS.md (full)      ~1000-3000 tokens
 AGENTS.md (head -50)  ~200-400 tokens    <- Use this!
 
-.planning/ (all)      ~2000-5000 tokens
-.planning/ (relevant) ~500-1000 tokens   <- Use this!
+.tk/planning/ (all)   ~2000-5000 tokens
+.tk/planning/ (relevant) ~500-1000 tokens   <- Use this!
 
 Agent logs (all)      ~1000-3000 tokens
 Agent logs (latest)   ~200-500 tokens    <- Use this!
@@ -117,6 +117,46 @@ fi
 - No emojis in code, comments, or output
 
 **Constant Enforcement:** Check every output against rules. Silently fix violations.
+
+---
+
+## MANDATORY: SubAgent Documentation
+
+**EVERY SubAgent MUST document its work in real-time.**
+
+When spawning ANY SubAgent, include this instruction:
+
+```
+CRITICAL: Document everything to .tk/agents/{your-agent-id}.md
+
+You MUST:
+1. Create your log file IMMEDIATELY on spawn
+2. Log start time and assigned task
+3. Log every file you read (path + why)
+4. Log every decision and the reasoning
+5. Log findings AS YOU DISCOVER THEM (not just at end)
+6. Write a summary section before returning
+
+Format:
+# Agent: {AGENT_ID}
+Started: {timestamp}
+Task: {description}
+
+## Files Read
+- path/to/file.ts - checking for X pattern
+
+## Decisions
+- Chose approach A over B because...
+
+## Findings
+- [timestamp] Found issue X in file Y
+- [timestamp] Discovered pattern Z
+
+## Summary
+What was accomplished, key insights, recommendations
+```
+
+This documentation is MANDATORY. SubAgents that don't document their work are considered failed.
 
 ---
 
@@ -162,12 +202,12 @@ echo "Project version initialized: 0.1.0"
 
 | Command | Bump | Example |
 |---------|------|---------|
-| `/tk:build` (new feature) | MINOR | 1.0.0 → 1.1.0 |
-| `/tk:build` (small change) | PATCH | 1.0.0 → 1.0.1 |
-| `/tk:debug` (bugfix) | PATCH | 1.0.0 → 1.0.1 |
+| `/tk:build` (new feature) | MINOR | 1.0.0 -> 1.1.0 |
+| `/tk:build` (small change) | PATCH | 1.0.0 -> 1.0.1 |
+| `/tk:debug` (bugfix) | PATCH | 1.0.0 -> 1.0.1 |
 | `/tk:deploy` | No bump (just records) | 1.1.0 |
 | `/tk:init` | Reset to 0.1.0 | 0.1.0 |
-| Major breaking change | MAJOR | 1.5.0 → 2.0.0 |
+| Major breaking change | MAJOR | 1.5.0 -> 2.0.0 |
 
 ### Before Starting Work
 
@@ -192,14 +232,14 @@ fi
 
 # Update VERSION file
 # Add to history
-# Log: "Version: X.Y.Z → X.Y.Z+1"
+# Log: "Version: X.Y.Z -> X.Y.Z+1"
 ```
 
 ### Display in Output
 
 Every build/deploy should show:
 ```
-Version: 1.2.3 → 1.2.4
+Version: 1.2.3 -> 1.2.4
 ```
 
 ---
@@ -209,7 +249,7 @@ Version: 1.2.3 → 1.2.4
 ```bash
 # 1. Load rules (silently)
 # 2. Read project version
-mkdir -p .tk/agents .tk/locks .planning
+mkdir -p .tk/agents .tk/locks .tk/planning .tk/debug .tk/qa
 
 # 3. Generate agent ID
 AGENT_ID="$(hostname)-$(date +%s)-$$-$RANDOM"
@@ -227,7 +267,7 @@ Project Version: $CURRENT_VERSION
 EOF
 
 # 6. Check context
-[ ! -f "AGENTS.md" ] && echo "No AGENTS.md - run /tk:map first"
+[ ! -f "AGENTS.md" ] && echo "[WARN] No AGENTS.md - run /tk:map first"
 ```
 
 ---
@@ -279,15 +319,20 @@ echo "| $AGENT_ID | DONE | $(date +%H:%M:%S) |" >> .tk/COORDINATION.md
 
 ## Mode Behaviors
 
-| Mode | Rules | Questions | SubAgents | Version |
-|------|-------|-----------|-----------|---------|
-| light | Silent | 0-1 | No | Bump patch |
-| medium | Silent | 2-3 | Optional | Bump patch/minor |
-| heavy | Silent | Full | Yes + DOCS | Bump minor |
+| Mode | Rules | Questions | SubAgents | Documentation |
+|------|-------|-----------|-----------|---------------|
+| light | Silent | 2-3 | Yes + DOCS | Full .tk/ logging |
+| medium | Silent | Full | 2x parallel + DOCS + Validator | Deep documentation |
+| heavy | Silent | Full + Follow-up | 3x parallel + DOCS + Cross-validators | Maximum documentation |
+
+**Mode Philosophy:**
+- **light**: Full 7-phase workflow with parallel SubAgents + DOCS agent (powerful baseline)
+- **medium**: 2x the SubAgents per phase, deeper analysis, cross-validation between agents
+- **heavy**: Maximum parallelization, multiple review passes, agents that challenge/verify other agents' work, extended context gathering
 
 ---
 
 ## Escalation
 
-- **light → medium:** After 2 failed attempts
-- **medium → heavy:** After 3 failed hypotheses
+- **light -> medium:** After 2 failed attempts
+- **medium -> heavy:** After 3 failed hypotheses
